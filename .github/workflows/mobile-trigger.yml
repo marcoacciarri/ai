@@ -1,0 +1,396 @@
+name: Mobile Agent Trigger
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  parse-command:
+    if: startsWith(github.event.comment.body, '/agent')
+    runs-on: ubuntu-latest
+    outputs:
+      command: ${{ steps.parse.outputs.command }}
+      args: ${{ steps.parse.outputs.args }}
+    steps:
+      - name: Parse slash command
+        id: parse
+        env:
+          COMMENT_BODY: ${{ github.event.comment.body }}
+        run: |
+          # Extract command and arguments from: /agent <command> [args...]
+          COMMAND=$(echo "$COMMENT_BODY" | head -1 | awk '{print $2}')
+          ARGS=$(echo "$COMMENT_BODY" | head -1 | cut -d' ' -f3-)
+
+          if [[ -z "$COMMAND" ]]; then
+            echo "command=help" >> "$GITHUB_OUTPUT"
+            echo "args=" >> "$GITHUB_OUTPUT"
+          else
+            echo "command=$COMMAND" >> "$GITHUB_OUTPUT"
+            echo "args=$ARGS" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: React to comment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMENT_ID: ${{ github.event.comment.id }}
+          REPO: ${{ github.repository }}
+        run: |
+          gh api \
+            --method POST \
+            "/repos/$REPO/issues/comments/$COMMENT_ID/reactions" \
+            -f content='eyes'
+
+  help:
+    needs: parse-command
+    if: needs.parse-command.outputs.command == 'help'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post help message
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" -R "$REPO" --body "## 🤖 Agent Commands
+
+          | Command | Description | Example |
+          |---------|-------------|---------|
+          | \`/agent help\` | Show this help message | \`/agent help\` |
+          | \`/agent status\` | Show PRD progress summary | \`/agent status\` |
+          | \`/agent status P1-001\` | Show status of a specific deliverable | \`/agent status P2-006\` |
+          | \`/agent list\` | List all deliverables by phase | \`/agent list\` |
+          | \`/agent list phase:2\` | List deliverables in a specific phase | \`/agent list phase:3\` |
+          | \`/agent next\` | Show next unblocked deliverables ready for work | \`/agent next\` |
+          | \`/agent build P1-001\` | Assign Copilot to implement a deliverable | \`/agent build P1-001\` |
+          | \`/agent build-wave 1\` | Create issues for all items in an execution wave | \`/agent build-wave 1\` |"
+
+  status:
+    needs: parse-command
+    if: needs.parse-command.outputs.command == 'status'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Report status
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+          ARGS: ${{ needs.parse-command.outputs.args }}
+        run: |
+          if [[ -n "$ARGS" ]]; then
+            # Status for specific deliverable
+            ITEM=$(jq -r --arg id "$ARGS" '.deliverables[] | select(.id == $id)' prd.json)
+            if [[ -z "$ITEM" || "$ITEM" == "null" ]]; then
+              gh issue comment "$ISSUE_NUMBER" -R "$REPO" --body "❌ Deliverable \`$ARGS\` not found in prd.json"
+              exit 0
+            fi
+
+            TITLE=$(echo "$ITEM" | jq -r '.title')
+            PASSES=$(echo "$ITEM" | jq -r '.passes')
+            PRIORITY=$(echo "$ITEM" | jq -r '.priority')
+            EFFORT=$(echo "$ITEM" | jq -r '.effort')
+            DEPS=$(echo "$ITEM" | jq -r '.dependsOn // [] | join(", ")')
+            STEPS=$(echo "$ITEM" | jq -r '.steps[] | "- [ ] " + .')
+            STATUS_ICON=$([[ "$PASSES" == "true" ]] && echo "✅" || echo "⬜")
+
+            gh issue comment "$ISSUE_NUMBER" -R "$REPO" --body "## $STATUS_ICON $ARGS: $TITLE
+
+          **Priority:** $PRIORITY | **Effort:** $EFFORT | **Passes:** $PASSES
+          **Depends on:** ${DEPS:-none}
+
+          ### Acceptance Criteria
+          $STEPS"
+          else
+            # Overall status
+            TOTAL=$(jq '.deliverables | length' prd.json)
+            PASSED=$(jq '[.deliverables[] | select(.passes == true)] | length' prd.json)
+            REMAINING=$((TOTAL - PASSED))
+
+            # Per-phase breakdown
+            PHASE_STATUS=""
+            for PHASE in $(jq -r '[.deliverables[].phase] | unique | sort | .[]' prd.json); do
+              P_TOTAL=$(jq --argjson p "$PHASE" '[.deliverables[] | select(.phase == $p)] | length' prd.json)
+              P_DONE=$(jq --argjson p "$PHASE" '[.deliverables[] | select(.phase == $p and .passes == true)] | length' prd.json)
+              PHASE_STATUS="$PHASE_STATUS
+          | Phase $PHASE | $P_DONE / $P_TOTAL |"
+            done
+
+            gh issue comment "$ISSUE_NUMBER" -R "$REPO" --body "## 📊 PRD Progress
+
+          **$PASSED / $TOTAL** deliverables complete ($REMAINING remaining)
+
+          | Phase | Progress |
+          |-------|----------|$PHASE_STATUS"
+          fi
+
+  list:
+    needs: parse-command
+    if: needs.parse-command.outputs.command == 'list'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: List deliverables
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+          ARGS: ${{ needs.parse-command.outputs.args }}
+        run: |
+          if [[ "$ARGS" == phase:* ]]; then
+            PHASE_NUM="${ARGS#phase:}"
+            FILTER="select(.phase == ($PHASE_NUM | tonumber))"
+          else
+            FILTER="."
+          fi
+
+          ITEMS=$(jq -r --arg filter "$FILTER" "
+            [.deliverables[] | $FILTER] |
+            group_by(.phase)[] |
+            \"### Phase \(.[0].phase)\n\" +
+            ([.[] |
+              (if .passes then \"- [x]\" else \"- [ ]\" end) +
+              \" **\" + .id + \"**: \" + .title +
+              \" (\" + .priority + \", \" + .effort + \")\"
+            ] | join(\"\n\"))
+          " prd.json 2>/dev/null)
+
+          if [[ -z "$ITEMS" ]]; then
+            gh issue comment "$ISSUE_NUMBER" -R "$REPO" --body "❌ No deliverables found for filter \`$ARGS\`"
+          else
+            gh issue comment "$ISSUE_NUMBER" -R "$REPO" --body "## 📋 Deliverables
+
+          $ITEMS"
+          fi
+
+  next:
+    needs: parse-command
+    if: needs.parse-command.outputs.command == 'next'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Find next unblocked items
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          # Find deliverables where: passes=false AND all dependsOn items have passes=true
+          NEXT=$(jq -r '
+            .deliverables as $all |
+            [.deliverables[] |
+              select(.passes == false) |
+              select(
+                (.dependsOn // []) | length == 0 or
+                ((.dependsOn // []) | all(. as $dep | $all[] | select(.id == $dep) | .passes))
+              )
+            ] |
+            sort_by(.priority | if . == "critical" then 0 elif . == "high" then 1 elif . == "medium" then 2 else 3 end) |
+            .[:10] |
+            .[] |
+            "| **" + .id + "** | " + .title + " | " + .priority + " | " + .effort + " | " + ((.dependsOn // []) | join(", ")) + " |"
+          ' prd.json)
+
+          if [[ -z "$NEXT" ]]; then
+            gh issue comment "$ISSUE_NUMBER" -R "$REPO" --body "🎉 All deliverables are complete!"
+          else
+            gh issue comment "$ISSUE_NUMBER" -R "$REPO" --body "## 🚀 Next Unblocked Deliverables
+
+          Ready to build — all dependencies satisfied:
+
+          | ID | Title | Priority | Effort | Depends On |
+          |----|-------|----------|--------|------------|
+          $NEXT
+
+          Use \`/agent build <ID>\` to start implementing one."
+          fi
+
+  build:
+    needs: parse-command
+    if: needs.parse-command.outputs.command == 'build'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build deliverable
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+          DELIVERABLE_ID: ${{ needs.parse-command.outputs.args }}
+        run: |
+          if [[ -z "$DELIVERABLE_ID" ]]; then
+            gh issue comment "$ISSUE_NUMBER" -R "$REPO" --body "❌ Usage: \`/agent build <deliverable-id>\` (e.g., \`/agent build P1-001\`)"
+            exit 0
+          fi
+
+          # Validate deliverable exists
+          ITEM=$(jq -r --arg id "$DELIVERABLE_ID" '.deliverables[] | select(.id == $id)' prd.json)
+          if [[ -z "$ITEM" || "$ITEM" == "null" ]]; then
+            gh issue comment "$ISSUE_NUMBER" -R "$REPO" --body "❌ Deliverable \`$DELIVERABLE_ID\` not found in prd.json"
+            exit 0
+          fi
+
+          TITLE=$(echo "$ITEM" | jq -r '.title')
+          DESCRIPTION=$(echo "$ITEM" | jq -r '.description')
+          PRIORITY=$(echo "$ITEM" | jq -r '.priority')
+          EFFORT=$(echo "$ITEM" | jq -r '.effort')
+          DEPS=$(echo "$ITEM" | jq -r '.dependsOn // [] | join(", ")')
+          OUTPUTS=$(echo "$ITEM" | jq -r '.outputs // [] | join(", ")')
+          STEPS=$(echo "$ITEM" | jq -r '.steps[] | "- [ ] " + .')
+          TAGS=$(echo "$ITEM" | jq -r '.tags // [] | join(", ")')
+
+          # Check if dependencies are met
+          UNMET=$(jq -r --arg id "$DELIVERABLE_ID" '
+            .deliverables as $all |
+            .deliverables[] | select(.id == $id) |
+            (.dependsOn // [])[] |
+            . as $dep |
+            $all[] | select(.id == $dep and .passes == false) |
+            .id
+          ' prd.json)
+
+          BLOCKED_NOTE=""
+          if [[ -n "$UNMET" ]]; then
+            BLOCKED_NOTE="
+          > ⚠️ **Blocked by unfinished dependencies:** $UNMET
+          > Consider building those first, or proceed if you know what you're doing."
+          fi
+
+          # Create implementation issue
+          ISSUE_BODY="## $DELIVERABLE_ID: $TITLE
+
+          $DESCRIPTION
+          $BLOCKED_NOTE
+
+          **Priority:** $PRIORITY | **Effort:** $EFFORT
+          **Depends on:** ${DEPS:-none}
+          **Outputs:** $OUTPUTS
+          **Tags:** ${TAGS:-none}
+
+          ### Acceptance Criteria
+          $STEPS
+
+          ### Implementation Notes
+          - Reference \`RESEARCH.md\` for external dependency documentation
+          - Follow TDD: write failing test from acceptance criteria → implement → refactor
+          - Mark \`passes: true\` in \`prd.json\` when all criteria pass
+          - Update \`progress.md\` with completion note
+
+          ---
+          *Created by \`/agent build $DELIVERABLE_ID\` from #$ISSUE_NUMBER*"
+
+          NEW_ISSUE=$(gh issue create \
+            -R "$REPO" \
+            --title "$DELIVERABLE_ID: $TITLE" \
+            --body "$ISSUE_BODY" \
+            --label "ai-work,$PRIORITY,effort:$EFFORT" \
+            --assignee "copilot" 2>&1) || true
+
+          if echo "$NEW_ISSUE" | grep -q "https://"; then
+            gh issue comment "$ISSUE_NUMBER" -R "$REPO" --body "✅ Created implementation issue and assigned Copilot:
+          $NEW_ISSUE
+
+          **$DELIVERABLE_ID: $TITLE**
+          Priority: $PRIORITY | Effort: $EFFORT
+          ${BLOCKED_NOTE}"
+          else
+            # Copilot assignment may not be available — create issue without assignee
+            NEW_ISSUE=$(gh issue create \
+              -R "$REPO" \
+              --title "$DELIVERABLE_ID: $TITLE" \
+              --body "$ISSUE_BODY" \
+              --label "ai-work,$PRIORITY,effort:$EFFORT")
+
+            gh issue comment "$ISSUE_NUMBER" -R "$REPO" --body "✅ Created implementation issue:
+          $NEW_ISSUE
+
+          **$DELIVERABLE_ID: $TITLE**
+          Priority: $PRIORITY | Effort: $EFFORT
+
+          > Note: Assign \`copilot\` manually if Copilot Coding Agent is enabled.
+          ${BLOCKED_NOTE}"
+          fi
+
+  build-wave:
+    needs: parse-command
+    if: needs.parse-command.outputs.command == 'build-wave'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build all items in a wave
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+          WAVE_NUM: ${{ needs.parse-command.outputs.args }}
+        run: |
+          if [[ -z "$WAVE_NUM" ]]; then
+            gh issue comment "$ISSUE_NUMBER" -R "$REPO" --body "❌ Usage: \`/agent build-wave <phase-number>\` (e.g., \`/agent build-wave 1\`)"
+            exit 0
+          fi
+
+          # Get all deliverables in the phase
+          ITEMS=$(jq -r --argjson phase "$WAVE_NUM" '
+            [.deliverables[] | select(.phase == $phase and .passes == false)] |
+            .[] | .id
+          ' prd.json)
+
+          if [[ -z "$ITEMS" ]]; then
+            gh issue comment "$ISSUE_NUMBER" -R "$REPO" --body "✅ Phase $WAVE_NUM: all deliverables already complete (or phase doesn't exist)"
+            exit 0
+          fi
+
+          CREATED=""
+          COUNT=0
+          while IFS= read -r DELIVERABLE_ID; do
+            ITEM=$(jq -r --arg id "$DELIVERABLE_ID" '.deliverables[] | select(.id == $id)' prd.json)
+            TITLE=$(echo "$ITEM" | jq -r '.title')
+            DESCRIPTION=$(echo "$ITEM" | jq -r '.description')
+            PRIORITY=$(echo "$ITEM" | jq -r '.priority')
+            EFFORT=$(echo "$ITEM" | jq -r '.effort')
+            DEPS=$(echo "$ITEM" | jq -r '.dependsOn // [] | join(", ")')
+            OUTPUTS=$(echo "$ITEM" | jq -r '.outputs // [] | join(", ")')
+            STEPS=$(echo "$ITEM" | jq -r '.steps[] | "- [ ] " + .')
+
+            ISSUE_BODY="## $DELIVERABLE_ID: $TITLE
+
+          $DESCRIPTION
+
+          **Priority:** $PRIORITY | **Effort:** $EFFORT
+          **Depends on:** ${DEPS:-none}
+          **Outputs:** $OUTPUTS
+
+          ### Acceptance Criteria
+          $STEPS
+
+          ### Implementation Notes
+          - Reference \`RESEARCH.md\` for external dependency documentation
+          - Follow TDD: write failing test from acceptance criteria → implement → refactor
+          - Mark \`passes: true\` in \`prd.json\` when all criteria pass
+
+          ---
+          *Created by \`/agent build-wave $WAVE_NUM\` from #$ISSUE_NUMBER*"
+
+            NEW_ISSUE=$(gh issue create \
+              -R "$REPO" \
+              --title "$DELIVERABLE_ID: $TITLE" \
+              --body "$ISSUE_BODY" \
+              --label "ai-work,$PRIORITY,effort:$EFFORT,phase:$WAVE_NUM" 2>&1)
+
+            CREATED="$CREATED
+          - $NEW_ISSUE — **$DELIVERABLE_ID**: $TITLE"
+            COUNT=$((COUNT + 1))
+          done <<< "$ITEMS"
+
+          gh issue comment "$ISSUE_NUMBER" -R "$REPO" --body "## 🚀 Phase $WAVE_NUM: Created $COUNT issues
+          $CREATED
+
+          Assign \`copilot\` to each issue to start implementation."
