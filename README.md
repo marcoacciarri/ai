@@ -75,14 +75,14 @@ Clone this repo, then run the installer from your target project:
 
 ```bash
 # From your project directory
-/path/to/ai-toolkit/install-agents
+/path/to/ai/install-agents
 ```
 
 Or clone and install in one step:
 
 ```bash
-git clone https://github.com/marcoacciarri/ai-toolkit.git /tmp/ai-toolkit
-/tmp/ai-toolkit/install-agents
+git clone https://github.com/marcoacciarri/ai.git /tmp/ai
+/tmp/ai/install-agents
 ```
 
 #### Selective Install
@@ -105,7 +105,7 @@ git clone https://github.com/marcoacciarri/ai-toolkit.git /tmp/ai-toolkit
 #### Updating
 
 ```bash
-/path/to/ai-toolkit/install-agents --force
+/path/to/ai/install-agents --force
 ```
 
 Commit your work first — `--force` overwrites existing files.
@@ -113,15 +113,15 @@ Commit your work first — `--force` overwrites existing files.
 ### Option 2: Degit (no clone needed)
 
 ```bash
-npx degit marcoacciarri/ai-toolkit/.github .github
+npx degit marcoacciarri/ai/.github .github
 ```
 
 #### Partial install with degit
 
 ```bash
-npx degit marcoacciarri/ai-toolkit/.github/skills .github/skills
-npx degit marcoacciarri/ai-toolkit/.github/prompts .github/prompts
-npx degit marcoacciarri/ai-toolkit/.github/workflows .github/workflows
+npx degit marcoacciarri/ai/.github/skills .github/skills
+npx degit marcoacciarri/ai/.github/prompts .github/prompts
+npx degit marcoacciarri/ai/.github/workflows .github/workflows
 ```
 
 ## Prerequisites
