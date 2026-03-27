@@ -7,6 +7,7 @@ on:
 permissions:
   contents: read
   issues: write
+  pull-requests: read
 
 jobs:
   parse-command:
@@ -66,7 +67,10 @@ jobs:
           | \`/agent list phase:2\` | List deliverables in a specific phase | \`/agent list phase:3\` |
           | \`/agent next\` | Show next unblocked deliverables ready for work | \`/agent next\` |
           | \`/agent build P1-001\` | Assign Copilot to implement a deliverable | \`/agent build P1-001\` |
-          | \`/agent build-wave 1\` | Create issues for all items in an execution wave | \`/agent build-wave 1\` |"
+          | \`/agent build-wave 1\` | Create issues for all items in an execution wave | \`/agent build-wave 1\` |
+          | \`/agent prd <desc>\` | Start PRD creation — posts interview questions | \`/agent prd Add OAuth2 login\` |
+          | \`/agent prd-go\` | Collect answers, assign Copilot to generate prd.json | \`/agent prd-go\` |
+          | \`/agent verify [PR#]\` | Run test suite on a PR (self-hosted runner) | \`/agent verify 42\` |"
 
   status:
     needs: parse-command
@@ -82,6 +86,11 @@ jobs:
           REPO: ${{ github.repository }}
           ARGS: ${{ needs.parse-command.outputs.args }}
         run: |
+          if [[ ! -f "prd.json" ]]; then
+            gh issue comment "$ISSUE_NUMBER" -R "$REPO" --body "❌ No \`prd.json\` found in the repo. Use \`/agent prd\` to create one first."
+            exit 0
+          fi
+
           if [[ -n "$ARGS" ]]; then
             # Status for specific deliverable
             ITEM=$(jq -r --arg id "$ARGS" '.deliverables[] | select(.id == $id)' prd.json)
@@ -142,6 +151,11 @@ jobs:
           REPO: ${{ github.repository }}
           ARGS: ${{ needs.parse-command.outputs.args }}
         run: |
+          if [[ ! -f "prd.json" ]]; then
+            gh issue comment "$ISSUE_NUMBER" -R "$REPO" --body "❌ No \`prd.json\` found in the repo. Use \`/agent prd\` to create one first."
+            exit 0
+          fi
+
           if [[ "$ARGS" == phase:* ]]; then
             PHASE_NUM="${ARGS#phase:}"
             FILTER="select(.phase == ($PHASE_NUM | tonumber))"
@@ -181,6 +195,11 @@ jobs:
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           REPO: ${{ github.repository }}
         run: |
+          if [[ ! -f "prd.json" ]]; then
+            gh issue comment "$ISSUE_NUMBER" -R "$REPO" --body "❌ No \`prd.json\` found in the repo. Use \`/agent prd\` to create one first."
+            exit 0
+          fi
+
           # Find deliverables where: passes=false AND all dependsOn items have passes=true
           NEXT=$(jq -r '
             .deliverables as $all |
@@ -227,6 +246,11 @@ jobs:
         run: |
           if [[ -z "$DELIVERABLE_ID" ]]; then
             gh issue comment "$ISSUE_NUMBER" -R "$REPO" --body "❌ Usage: \`/agent build <deliverable-id>\` (e.g., \`/agent build P1-001\`)"
+            exit 0
+          fi
+
+          if [[ ! -f "prd.json" ]]; then
+            gh issue comment "$ISSUE_NUMBER" -R "$REPO" --body "❌ No \`prd.json\` found in the repo. Use \`/agent prd\` to create one first."
             exit 0
           fi
 
@@ -337,6 +361,16 @@ jobs:
             exit 0
           fi
 
+          if ! [[ "$WAVE_NUM" =~ ^[0-9]+$ ]]; then
+            gh issue comment "$ISSUE_NUMBER" -R "$REPO" --body "❌ Wave number must be a number (e.g., \`/agent build-wave 1\`)"
+            exit 0
+          fi
+
+          if [[ ! -f "prd.json" ]]; then
+            gh issue comment "$ISSUE_NUMBER" -R "$REPO" --body "❌ No \`prd.json\` found in the repo. Use \`/agent prd\` to create one first."
+            exit 0
+          fi
+
           # Get all deliverables in the phase
           ITEMS=$(jq -r --argjson phase "$WAVE_NUM" '
             [.deliverables[] | select(.phase == $phase and .passes == false)] |
@@ -394,3 +428,255 @@ jobs:
           $CREATED
 
           Assign \`copilot\` to each issue to start implementation."
+
+  prd:
+    needs: parse-command
+    if: needs.parse-command.outputs.command == 'prd'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post PRD interview questions
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+          FEATURE_DESC: ${{ needs.parse-command.outputs.args }}
+        run: |
+          if [[ -z "$FEATURE_DESC" ]]; then
+            gh issue comment "$ISSUE_NUMBER" -R "$REPO" --body "❌ Usage: \`/agent prd <feature description>\`
+
+          Example: \`/agent prd Add OAuth2 authentication with Google and GitHub providers\`"
+            exit 0
+          fi
+
+          gh issue comment "$ISSUE_NUMBER" -R "$REPO" --body "## 📋 PRD Interview: $FEATURE_DESC
+
+          Before generating the PRD, please answer these questions. Reply in a single comment with numbered answers.
+
+          ### Scope & Users
+          1. **Who are the target users?** (end users, admins, API consumers, developers?)
+          2. **What problem does this solve?** (pain point, workflow gap, missing capability)
+          3. **What does success look like?** (key outcome when this ships)
+
+          ### Technical Context
+          4. **What existing code/modules does this touch?** (or is it greenfield?)
+          5. **Are there external dependencies?** (APIs, packages, services)
+          6. **Any technical constraints?** (tech stack, performance, compatibility)
+
+          ### Design Decisions
+          7. **What's explicitly out of scope?** (features to defer, edge cases to ignore)
+          8. **Any strong opinions on approach?** (patterns, architecture preferences)
+          9. **Should this include tests?** (which modules, what kind?)
+          10. **Priority and rough effort?** (critical/high/medium/low, T-shirt size)
+
+          ---
+          Reply with your answers, then use \`/agent prd-go\` to generate the PRD."
+
+  prd-go:
+    needs: parse-command
+    if: needs.parse-command.outputs.command == 'prd-go'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Collect conversation and create PRD issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          # Fetch issue context
+          ISSUE_TITLE=$(gh api "/repos/$REPO/issues/$ISSUE_NUMBER" --jq '.title')
+          ISSUE_BODY_TEXT=$(gh api "/repos/$REPO/issues/$ISSUE_NUMBER" --jq '.body // ""')
+
+          # Fetch all comments from the thread (truncate to stay under issue body limits)
+          COMMENTS=$(gh api "/repos/$REPO/issues/$ISSUE_NUMBER/comments" --paginate \
+            --jq '.[] | "**@" + .user.login + ":**\n" + .body + "\n\n---\n"' | head -c 30000)
+
+          # Write static PRD generation instructions
+          cat > /tmp/prd-body.md << 'INSTRUCTIONS_END'
+          ## Generate PRD
+
+          Create a `prd.json` and `progress.md` for this feature based on the conversation below.
+
+          ### Instructions
+
+          1. **Read `.github/prompts/prd-create.prompt.md`** for the exact `prd.json` schema and rules
+          2. **Explore the codebase** to understand architecture, patterns, and relevant modules
+          3. **Read the conversation context** below — it contains the feature description and user's answers
+          4. **Generate `prd.json`** in the project root following the schema
+          5. **Generate `progress.md`** with checkbox tracking organized by phase
+          6. Use specific, verifiable acceptance criteria in `steps`
+          7. Map `dependsOn` accurately — use tracer-bullet vertical slices
+          8. Look for opportunities to extract deep, testable modules
+
+          ### Conversation Context
+          INSTRUCTIONS_END
+
+          # Append dynamic content safely
+          {
+            printf '**Source issue:** #%s — %s\n\n' "$ISSUE_NUMBER" "$ISSUE_TITLE"
+            printf '%s\n\n---\n\n' "$ISSUE_BODY_TEXT"
+            printf '%s\n\n' "$COMMENTS"
+            printf -- '---\n*Created by `/agent prd-go` from #%s*\n' "$ISSUE_NUMBER"
+          } >> /tmp/prd-body.md
+
+          # Create PRD generation issue and assign Copilot
+          NEW_ISSUE=$(gh issue create \
+            -R "$REPO" \
+            --title "PRD: $ISSUE_TITLE" \
+            --body-file /tmp/prd-body.md \
+            --label "ai-work,prd" \
+            --assignee "copilot" 2>&1) || true
+
+          if echo "$NEW_ISSUE" | grep -q "https://"; then
+            gh issue comment "$ISSUE_NUMBER" -R "$REPO" --body "✅ PRD generation issue created and assigned to Copilot:
+          $NEW_ISSUE
+
+          Copilot will explore the codebase and open a PR with \`prd.json\` + \`progress.md\`."
+          else
+            NEW_ISSUE=$(gh issue create \
+              -R "$REPO" \
+              --title "PRD: $ISSUE_TITLE" \
+              --body-file /tmp/prd-body.md \
+              --label "ai-work,prd")
+
+            gh issue comment "$ISSUE_NUMBER" -R "$REPO" --body "✅ PRD generation issue created:
+          $NEW_ISSUE
+
+          > Assign \`copilot\` manually if Copilot Coding Agent is enabled."
+          fi
+
+          rm -f /tmp/prd-body.md
+
+  verify-unavailable:
+    needs: parse-command
+    if: needs.parse-command.outputs.command == 'verify' && vars.SELF_HOSTED_RUNNER != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post setup instructions
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" -R "$REPO" --body "## ⚠️ Self-hosted runner not configured
+
+          \`/agent verify\` requires a self-hosted runner on your machine to execute tests locally.
+
+          ### Setup (one-time)
+
+          1. Go to **Settings → Actions → Runners → New self-hosted runner** in this repo
+          2. Follow the download and configure steps for your OS
+          3. Install as a service so it runs in the background:
+             \`\`\`bash
+             ./svc.sh install
+             ./svc.sh start
+             \`\`\`
+          4. Add a **repository variable** to enable the command:
+             - Go to **Settings → Secrets and variables → Actions → Variables**
+             - Click **New repository variable**
+             - Name: \`SELF_HOSTED_RUNNER\` — Value: \`true\`
+
+          5. Try \`/agent verify\` again!
+
+          📖 [GitHub docs: Adding self-hosted runners](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/adding-self-hosted-runners)"
+
+  verify:
+    needs: parse-command
+    if: needs.parse-command.outputs.command == 'verify' && vars.SELF_HOSTED_RUNNER == 'true'
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ needs.parse-command.outputs.args }}
+        run: |
+          # Determine which PR to verify
+          if [[ -z "$PR_NUMBER" ]]; then
+            PR_NUMBER=$(gh pr list -R "$REPO" --state open --limit 1 --json number --jq '.[0].number')
+            if [[ -z "$PR_NUMBER" || "$PR_NUMBER" == "null" ]]; then
+              gh issue comment "$ISSUE_NUMBER" -R "$REPO" --body "❌ No open PRs found. Usage: \`/agent verify [pr-number]\`"
+              exit 0
+            fi
+          fi
+
+          # Get PR info
+          PR_INFO=$(gh pr view "$PR_NUMBER" -R "$REPO" --json title,headRefName 2>/dev/null)
+          if [[ -z "$PR_INFO" ]]; then
+            gh issue comment "$ISSUE_NUMBER" -R "$REPO" --body "❌ PR #$PR_NUMBER not found"
+            exit 0
+          fi
+          PR_TITLE=$(echo "$PR_INFO" | jq -r '.title')
+          PR_BRANCH=$(echo "$PR_INFO" | jq -r '.headRefName')
+
+          gh issue comment "$ISSUE_NUMBER" -R "$REPO" --body "🔄 Verifying PR #$PR_NUMBER: **$PR_TITLE** (\`$PR_BRANCH\`)"
+
+          # Checkout the PR
+          gh pr checkout "$PR_NUMBER" -R "$REPO" || {
+            gh issue comment "$ISSUE_NUMBER" -R "$REPO" --body "❌ Failed to checkout PR #$PR_NUMBER"
+            exit 0
+          }
+
+          RESULTS=""
+          OVERALL=0
+
+          # Detect and run test suite
+          if [[ -f "artisan" ]]; then
+            TEST_OUT=$(php artisan test 2>&1 | tail -100) || OVERALL=1
+            RESULTS="### PHP Tests
+          \`\`\`
+          $TEST_OUT
+          \`\`\`"
+          elif [[ -f "package.json" ]] && grep -q '"test"' package.json 2>/dev/null; then
+            TEST_OUT=$(npm test 2>&1 | tail -100) || OVERALL=1
+            RESULTS="### Node.js Tests
+          \`\`\`
+          $TEST_OUT
+          \`\`\`"
+          elif [[ -f "Makefile" ]] && grep -q '^test:' Makefile 2>/dev/null; then
+            TEST_OUT=$(make test 2>&1 | tail -100) || OVERALL=1
+            RESULTS="### Make Tests
+          \`\`\`
+          $TEST_OUT
+          \`\`\`"
+          else
+            RESULTS="> No recognized test runner found (checked: artisan, package.json, Makefile)"
+          fi
+
+          # Validate prd.json if present
+          PRD_CHECK=""
+          if [[ -f "prd.json" ]]; then
+            if jq empty prd.json 2>/dev/null; then
+              TOTAL=$(jq '.deliverables | length' prd.json)
+              PASSED=$(jq '[.deliverables[] | select(.passes == true)] | length' prd.json)
+              PRD_CHECK="### PRD Validation
+          - JSON: ✅ valid
+          - Progress: **$PASSED / $TOTAL** passing"
+            else
+              PRD_CHECK="### PRD Validation
+          - JSON: ❌ invalid — \`jq\` parse error"
+              OVERALL=1
+            fi
+          fi
+
+          if [[ $OVERALL -eq 0 ]]; then
+            STATUS="✅ Verification passed"
+          else
+            STATUS="❌ Verification failed"
+          fi
+
+          gh issue comment "$ISSUE_NUMBER" -R "$REPO" --body "## $STATUS — PR #$PR_NUMBER
+
+          **$PR_TITLE** (\`$PR_BRANCH\`)
+
+          $RESULTS
+
+          $PRD_CHECK
+
+          ---
+          *Verified on self-hosted runner from #$ISSUE_NUMBER*"
+
+          # Return to default branch
+          git checkout - 2>/dev/null || true
