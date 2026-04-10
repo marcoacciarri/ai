@@ -13,7 +13,7 @@ Drop these into any repo to get a structured AI-assisted development lifecycle �
 | `/build`      | Orchestrates the full 7-phase lifecycle: Idea → Research → Prototype → PRD → Kanban → Execution → QA                        |
 | `/prd-create` | Converts feature requirements into a structured `prd.json` with trackable items, acceptance criteria, and dependency chains |
 
-### Skills (18 total)
+### Skills (17 total)
 
 **Planning & Design**
 
