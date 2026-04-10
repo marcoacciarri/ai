@@ -13,7 +13,7 @@ Drop these into any repo to get a structured AI-assisted development lifecycle �
 | `/build`      | Orchestrates the full 7-phase lifecycle: Idea → Research → Prototype → PRD → Kanban → Execution → QA                        |
 | `/prd-create` | Converts feature requirements into a structured `prd.json` with trackable items, acceptance criteria, and dependency chains |
 
-### Skills (18 total)
+### Skills (17 total)
 
 **Planning & Design**
 
@@ -88,7 +88,7 @@ git clone https://github.com/marcoacciarri/ai.git /tmp/ai
 #### Selective Install
 
 ```bash
-./install-agents skills           # Skills only (18 skills)
+./install-agents skills           # Skills only (17 skills)
 ./install-agents prompts          # Prompts only (/build, /prd-create)
 ./install-agents workflow         # Mobile workflow only (/agent commands)
 ./install-agents skills prompts   # Mix and match
@@ -142,6 +142,38 @@ The `/build` prompt walks you through:
 5. **Kanban** — Break PRD into GitHub Issues with dependencies and parallel work clusters
 6. **Execution** — Implement wave by wave using TDD
 7. **QA** — Verify quality, create new tickets for findings, loop back to execution
+
+## Deploying the Landing Page (`index.html`)
+
+This repo includes an `index.html` landing page. There are two ways to deploy it:
+
+### Option A: GitHub Pages (for anyone using this repo)
+
+A GitHub Actions workflow (`.github/workflows/deploy-pages.yml`) automatically deploys `index.html` whenever you push changes to `main`.
+
+**One-time setup:**
+
+1. Go to your repo's **Settings → Pages → Source**
+2. Select **GitHub Actions**
+
+Your page will be live at `https://<your-username>.github.io/<repo-name>`. You can optionally add a custom domain in the same Pages settings.
+
+### Option B: Cloudflare Pages (if you have a custom domain on Cloudflare)
+
+```bash
+# Install Wrangler CLI
+npm install -g wrangler
+
+# Log in to Cloudflare
+wrangler login
+
+# Deploy
+wrangler pages deploy . --project-name=<your-project-name>
+```
+
+Then go to **Cloudflare Dashboard → Workers & Pages → your project → Custom domains** to attach your domain.
+
+> Note: The `.wrangler/` folder is gitignored — it contains local cache and account credentials that should not be committed.
 
 ## Credits
 
