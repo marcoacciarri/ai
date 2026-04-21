@@ -143,37 +143,22 @@ The `/build` prompt walks you through:
 6. **Execution** — Implement wave by wave using TDD
 7. **QA** — Verify quality, create new tickets for findings, loop back to execution
 
-## Deploying the Landing Page (`index.html`)
+## Deploying Your Website
 
-This repo includes an `index.html` landing page. There are two ways to deploy it:
+The `site/` folder is where your website lives. Add your HTML, CSS, JS, and images there. A GitHub Actions workflow (`.github/workflows/deploy-pages.yml`) automatically deploys the `site/` folder to GitHub Pages whenever its contents change on `main`.
 
-### Option A: GitHub Pages (for anyone using this repo)
+### Setup
 
-A GitHub Actions workflow (`.github/workflows/deploy-pages.yml`) automatically deploys `index.html` whenever you push changes to `main`.
+1. Clone or fork this repo
+2. Add your website files to the `site/` folder
+3. Go to your repo's **Settings → Pages → Source** and select **GitHub Actions**
+4. Push to `main`
 
-**One-time setup:**
+Your site will be live at `https://<your-username>.github.io/<repo-name>/`.
 
-1. Go to your repo's **Settings → Pages → Source**
-2. Select **GitHub Actions**
+You can also trigger a deploy manually from the **Actions** tab using the "Run workflow" button.
 
-Your page will be live at `https://<your-username>.github.io/<repo-name>`. You can optionally add a custom domain in the same Pages settings.
-
-### Option B: Cloudflare Pages (if you have a custom domain on Cloudflare)
-
-```bash
-# Install Wrangler CLI
-npm install -g wrangler
-
-# Log in to Cloudflare
-wrangler login
-
-# Deploy
-wrangler pages deploy . --project-name=<your-project-name>
-```
-
-Then go to **Cloudflare Dashboard → Workers & Pages → your project → Custom domains** to attach your domain.
-
-> Note: The `.wrangler/` folder is gitignored — it contains local cache and account credentials that should not be committed.
+> **Tip:** You can optionally add a custom domain in the same Pages settings.
 
 ## Credits
 

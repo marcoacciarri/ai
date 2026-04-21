@@ -163,8 +163,9 @@ for component in "${COMPONENTS[@]}"; do
       echo ""
       ;;
     workflow)
-      echo -e "${BOLD}Workflow${NC}"
+      echo -e "${BOLD}Workflows${NC}"
       install_file "$SOURCE_DIR/workflows/mobile-trigger.yml" "$TARGET/workflows/mobile-trigger.yml"
+      install_file "$SOURCE_DIR/workflows/deploy-pages.yml" "$TARGET/workflows/deploy-pages.yml"
       echo ""
       ;;
   esac

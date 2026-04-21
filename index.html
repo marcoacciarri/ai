@@ -3,555 +3,520 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Development Toolkit — 7-Phase AI-Assisted Development</title>
-  <meta name="description" content="A portable collection of VS Code Copilot prompts, agent skills, and GitHub Actions workflows that implement the 7 Phases of AI Development framework." />
+  <title>AI Dev Toolkit — Ship faster with AI-powered skills in any repo</title>
+  <meta name="description" content="A portable collection of VS Code Copilot prompts, agent skills, and GitHub Actions workflows. Drop into any repo for a structured AI-assisted development lifecycle." />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg: #0a0e1a;
-      --bg2: #0f1424;
-      --bg3: #141929;
-      --border: #1e2640;
-      --accent: #6366f1;
-      --accent2: #818cf8;
-      --accent-glow: rgba(99,102,241,0.3);
-      --green: #22c55e;
-      --text: #e2e8f0;
-      --muted: #94a3b8;
-      --card-bg: #111627;
-    }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-    }
-
-    /* ── Nav ── */
-    nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(10,14,26,0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      padding: 0 2rem;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .nav-brand {
-      font-weight: 700;
-      font-size: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      color: var(--text);
-      text-decoration: none;
-    }
-
-    .nav-brand .dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--accent);
-      box-shadow: 0 0 8px var(--accent);
-    }
-
-    .nav-links { display: flex; gap: 1.5rem; }
-    .nav-links a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 0.9rem;
-      transition: color 0.2s;
-    }
-    .nav-links a:hover { color: var(--text); }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.55rem 1.25rem;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.2s;
-    }
-    .btn-primary {
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      box-shadow: 0 0 20px var(--accent-glow);
-    }
-    .btn-primary:hover {
-      background: var(--accent2);
-      box-shadow: 0 0 28px var(--accent-glow);
-      transform: translateY(-1px);
-    }
-    .btn-outline {
-      background: transparent;
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-    .btn-outline:hover {
-      border-color: var(--accent);
-      color: var(--accent2);
-      transform: translateY(-1px);
-    }
-
-    /* ── Hero ── */
-    .hero {
-      position: relative;
-      overflow: hidden;
-      padding: 7rem 2rem 5rem;
-      text-align: center;
-    }
-
-    .hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(99,102,241,0.18) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 40% at 80% 60%, rgba(129,140,248,0.08) 0%, transparent 60%);
-      pointer-events: none;
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.3rem 0.9rem;
-      border-radius: 99px;
-      background: rgba(99,102,241,0.12);
-      border: 1px solid rgba(99,102,241,0.3);
-      color: var(--accent2);
-      font-size: 0.8rem;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      margin-bottom: 1.75rem;
-    }
-
-    .hero h1 {
-      font-size: clamp(2.2rem, 6vw, 4rem);
-      font-weight: 800;
-      line-height: 1.15;
-      letter-spacing: -0.03em;
-      max-width: 800px;
-      margin: 0 auto 1.25rem;
-    }
-
-    .hero h1 span {
-      background: linear-gradient(135deg, #818cf8 0%, #a78bfa 50%, #6366f1 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .hero p {
-      font-size: 1.15rem;
-      color: var(--muted);
-      max-width: 580px;
-      margin: 0 auto 2.5rem;
-    }
-
-    .hero-cta {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .hero-stats {
-      display: flex;
-      gap: 2.5rem;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-top: 4rem;
-      padding-top: 3rem;
-      border-top: 1px solid var(--border);
-    }
-
-    .stat { text-align: center; }
-    .stat-num {
-      font-size: 2rem;
-      font-weight: 800;
-      color: var(--accent2);
-    }
-    .stat-label {
-      font-size: 0.85rem;
-      color: var(--muted);
-      margin-top: 0.25rem;
-    }
-
-    /* ── Sections ── */
-    section { padding: 5rem 2rem; }
-    .container { max-width: 1100px; margin: 0 auto; }
-
-    .section-label {
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--accent2);
-      margin-bottom: 0.75rem;
-    }
-
-    .section-title {
-      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      margin-bottom: 0.75rem;
-    }
-
-    .section-sub {
-      font-size: 1.05rem;
-      color: var(--muted);
-      max-width: 560px;
-      margin-bottom: 3rem;
-    }
-
-    /* ── Feature Grid ── */
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.25rem;
-    }
-
-    .feature-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 1.75rem;
-      transition: border-color 0.2s, transform 0.2s;
-    }
-
-    .feature-card:hover {
-      border-color: rgba(99,102,241,0.5);
-      transform: translateY(-3px);
-    }
-
-    .feature-icon {
-      width: 44px; height: 44px;
-      border-radius: 10px;
-      background: rgba(99,102,241,0.15);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.3rem;
-      margin-bottom: 1rem;
-    }
-
-    .feature-card h3 {
-      font-size: 1.05rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-
-    .feature-card p {
-      font-size: 0.9rem;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    /* ── Skills Table ── */
-    .skills-section { background: var(--bg2); }
-
-    .skills-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 0.75rem;
-    }
-
-    .skill-item {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.75rem;
-      padding: 1rem 1.1rem;
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      transition: border-color 0.2s;
-    }
-
-    .skill-item:hover { border-color: rgba(99,102,241,0.4); }
-
-    .skill-item code {
-      font-size: 0.8rem;
-      font-family: 'JetBrains Mono', 'Fira Code', monospace;
-      color: var(--accent2);
-      background: rgba(99,102,241,0.1);
-      padding: 0.15rem 0.4rem;
-      border-radius: 5px;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    .skill-item span {
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-
-    .skills-category {
-      grid-column: 1 / -1;
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--accent2);
-      margin-top: 1.5rem;
-      margin-bottom: 0.25rem;
-    }
-    .skills-category:first-child { margin-top: 0; }
-
-    /* ── Phases ── */
-    .phases-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-      position: relative;
-    }
-
-    .phases-list::before {
-      content: '';
-      position: absolute;
-      left: 22px;
-      top: 44px;
-      bottom: 44px;
-      width: 2px;
-      background: linear-gradient(to bottom, var(--accent), transparent);
-    }
-
-    .phase-item {
-      display: flex;
-      gap: 1.5rem;
-      padding: 1.5rem 0;
-    }
-
-    .phase-num {
-      width: 44px; height: 44px;
-      border-radius: 50%;
-      background: var(--card-bg);
-      border: 2px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 800;
-      font-size: 0.9rem;
-      color: var(--accent2);
-      flex-shrink: 0;
-      position: relative;
-      z-index: 1;
-    }
-
-    .phase-item.active .phase-num {
-      border-color: var(--accent);
-      box-shadow: 0 0 16px var(--accent-glow);
-    }
-
-    .phase-content { padding-top: 0.5rem; }
-
-    .phase-title {
-      font-weight: 700;
-      font-size: 1.05rem;
-      margin-bottom: 0.25rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .phase-badge {
-      font-size: 0.7rem;
-      padding: 0.1rem 0.5rem;
-      border-radius: 99px;
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      color: var(--muted);
-    }
-
-    .phase-desc { font-size: 0.9rem; color: var(--muted); }
-
-    /* ── Install ── */
-    .install-section { background: var(--bg2); }
-
-    .install-options {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .install-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 1.75rem;
-    }
-
-    .install-card.featured {
-      border-color: rgba(99,102,241,0.4);
-      box-shadow: 0 0 30px rgba(99,102,241,0.08);
-    }
-
-    .install-card h3 {
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .tag-recommended {
-      font-size: 0.7rem;
-      padding: 0.15rem 0.55rem;
-      border-radius: 99px;
-      background: rgba(34,197,94,0.15);
-      border: 1px solid rgba(34,197,94,0.3);
-      color: var(--green);
-      font-weight: 600;
-    }
-
-    .install-card p {
-      font-size: 0.9rem;
-      color: var(--muted);
-      margin-bottom: 1.25rem;
-    }
-
-    .code-block {
-      background: #07090f;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      overflow: hidden;
-    }
-
-    .code-block pre {
-      padding: 1rem 1.25rem;
-      font-size: 0.82rem;
-      font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
-      color: #cbd5e1;
-      overflow-x: auto;
-      white-space: pre;
-    }
-
-    .code-block pre .comment { color: #475569; }
-    .code-block pre .cmd { color: #818cf8; }
-    .code-block pre .flag { color: #6ee7b7; }
-
-    /* ── Mobile Workflow ── */
-    .workflow-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1rem;
-    }
-
-    .workflow-cmd {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1rem 1.1rem;
-      transition: border-color 0.2s;
-    }
-
-    .workflow-cmd:hover { border-color: rgba(99,102,241,0.4); }
-
-    .workflow-cmd code {
-      display: block;
-      font-family: 'JetBrains Mono', 'Fira Code', monospace;
-      font-size: 0.82rem;
-      color: var(--accent2);
-      margin-bottom: 0.4rem;
-    }
-
-    .workflow-cmd p {
-      font-size: 0.83rem;
-      color: var(--muted);
-    }
-
-    /* ── CTA Banner ── */
-    .cta-banner {
-      background: linear-gradient(135deg, rgba(99,102,241,0.15) 0%, rgba(129,140,248,0.08) 100%);
-      border-top: 1px solid rgba(99,102,241,0.2);
-      border-bottom: 1px solid rgba(99,102,241,0.2);
-      text-align: center;
-      padding: 5rem 2rem;
-    }
-
-    .cta-banner h2 {
-      font-size: clamp(1.6rem, 3.5vw, 2.5rem);
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      margin-bottom: 1rem;
-    }
-
-    .cta-banner p {
-      font-size: 1.05rem;
-      color: var(--muted);
-      max-width: 480px;
-      margin: 0 auto 2rem;
-    }
-
-    /* ── Footer ── */
-    footer {
-      background: var(--bg2);
-      border-top: 1px solid var(--border);
-      padding: 2.5rem 2rem;
-    }
-
-    .footer-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .footer-brand {
-      font-weight: 700;
-      font-size: 0.95rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .footer-links { display: flex; gap: 1.5rem; }
-    .footer-links a {
-      color: var(--muted);
-      font-size: 0.85rem;
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-    .footer-links a:hover { color: var(--text); }
-
-    .footer-note {
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-
-    .link-accent {
-      color: var(--accent2);
-      text-decoration: none;
-    }
-    .link-accent:hover { text-decoration: underline; }
-
-    /* ── Responsive ── */
-    @media (max-width: 640px) {
-      nav { padding: 0 1.25rem; }
-      .nav-links { display: none; }
-      section { padding: 3.5rem 1.25rem; }
-      .hero { padding: 5rem 1.25rem 3.5rem; }
-      .hero-stats { gap: 1.5rem; }
-    }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0a0e1a;
+  --bg2: #0f1424;
+  --bg3: #141929;
+  --border: #1e2640;
+  --accent: #06b6d4;
+  --accent2: #22d3ee;
+  --accent-rgb: 6, 182, 212;
+  --accent2-rgb: 34, 211, 238;
+  --accent-glow: rgba(var(--accent-rgb), 0.3);
+  --gradient: linear-gradient(135deg, #22d3ee 0%, #67e8f9 50%, #06b6d4 100%);
+  --green: #22c55e;
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --card-bg: #111627;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* ── Nav ── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10,14,26,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-brand {
+  font-weight: 700;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.nav-brand .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+}
+
+.nav-links { display: flex; gap: 1.5rem; }
+.nav-links a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--text); }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+.btn-primary:hover {
+  background: var(--accent2);
+  box-shadow: 0 0 28px var(--accent-glow);
+  transform: translateY(-1px);
+}
+.btn-outline {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-outline:hover {
+  border-color: var(--accent);
+  color: var(--accent2);
+  transform: translateY(-1px);
+}
+
+/* ── Hero ── */
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding: 7rem 2rem 5rem;
+  text-align: center;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(var(--accent-rgb),0.18) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 80% 60%, rgba(var(--accent2-rgb),0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.9rem;
+  border-radius: 99px;
+  background: rgba(var(--accent-rgb),0.12);
+  border: 1px solid rgba(var(--accent-rgb),0.3);
+  color: var(--accent2);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  margin-bottom: 1.75rem;
+}
+
+.hero h1 {
+  font-size: clamp(2.2rem, 6vw, 4rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  max-width: 800px;
+  margin: 0 auto 1.25rem;
+}
+
+.hero h1 span {
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero p {
+  font-size: 1.15rem;
+  color: var(--muted);
+  max-width: 580px;
+  margin: 0 auto 2.5rem;
+}
+
+.hero-cta {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 2.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 4rem;
+  padding-top: 3rem;
+  border-top: 1px solid var(--border);
+}
+
+.stat { text-align: center; }
+.stat-num {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--accent2);
+}
+.stat-label {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 0.25rem;
+}
+
+/* ── Sections ── */
+section { padding: 5rem 2rem; }
+.container { max-width: 1100px; margin: 0 auto; }
+
+.section-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent2);
+  margin-bottom: 0.75rem;
+}
+
+.section-title {
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.75rem;
+}
+
+.section-sub {
+  font-size: 1.05rem;
+  color: var(--muted);
+  max-width: 560px;
+  margin-bottom: 3rem;
+}
+
+/* ── Feature Grid ── */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+.feature-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.75rem;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.feature-card:hover {
+  border-color: rgba(var(--accent-rgb),0.5);
+  transform: translateY(-3px);
+}
+
+.feature-icon {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  background: rgba(var(--accent-rgb),0.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.feature-card p {
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* ── Generic Item Grid ── */
+.items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem;
+}
+
+.item-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 1rem 1.1rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  transition: border-color 0.2s;
+}
+
+.item-card:hover { border-color: rgba(var(--accent-rgb),0.4); }
+
+.item-card code {
+  font-size: 0.8rem;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  color: var(--accent2);
+  background: rgba(var(--accent-rgb),0.1);
+  padding: 0.15rem 0.4rem;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+
+.item-card span {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.items-category {
+  grid-column: 1 / -1;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent2);
+  margin-top: 1.5rem;
+  margin-bottom: 0.25rem;
+}
+.items-category:first-child { margin-top: 0; }
+
+/* ── Steps / Phases list ── */
+.steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+}
+
+.steps-list::before {
+  content: '';
+  position: absolute;
+  left: 22px;
+  top: 44px;
+  bottom: 44px;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--accent), transparent);
+}
+
+.step-item {
+  display: flex;
+  gap: 1.5rem;
+  padding: 1.5rem 0;
+}
+
+.step-num {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--card-bg);
+  border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: var(--accent2);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.step-item.active .step-num {
+  border-color: var(--accent);
+  box-shadow: 0 0 16px var(--accent-glow);
+}
+
+.step-content { padding-top: 0.5rem; }
+
+.step-title {
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.step-badge {
+  font-size: 0.7rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 99px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+
+.step-desc { font-size: 0.9rem; color: var(--muted); }
+
+/* ── Install / Code Block ── */
+.install-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.install-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.75rem;
+}
+
+.install-card.featured {
+  border-color: rgba(var(--accent-rgb),0.4);
+  box-shadow: 0 0 30px rgba(var(--accent-rgb),0.08);
+}
+
+.install-card h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tag-recommended {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.55rem;
+  border-radius: 99px;
+  background: rgba(34,197,94,0.15);
+  border: 1px solid rgba(34,197,94,0.3);
+  color: var(--green);
+  font-weight: 600;
+}
+
+.install-card p {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-bottom: 1.25rem;
+}
+
+.code-block {
+  background: #07090f;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.code-block pre {
+  padding: 1rem 1.25rem;
+  font-size: 0.82rem;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  color: #cbd5e1;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.code-block pre .comment { color: #475569; }
+.code-block pre .cmd { color: var(--accent2); }
+.code-block pre .flag { color: #6ee7b7; }
+
+/* ── CTA Banner ── */
+.cta-banner {
+  background: linear-gradient(135deg, rgba(var(--accent-rgb),0.15) 0%, rgba(var(--accent2-rgb),0.08) 100%);
+  border-top: 1px solid rgba(var(--accent-rgb),0.2);
+  border-bottom: 1px solid rgba(var(--accent-rgb),0.2);
+  text-align: center;
+  padding: 5rem 2rem;
+}
+
+.cta-banner h2 {
+  font-size: clamp(1.6rem, 3.5vw, 2.5rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+}
+
+.cta-banner p {
+  font-size: 1.05rem;
+  color: var(--muted);
+  max-width: 480px;
+  margin: 0 auto 2rem;
+}
+
+/* ── Footer ── */
+footer {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  padding: 2.5rem 2rem;
+}
+
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.footer-brand {
+  font-weight: 700;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.footer-links { display: flex; gap: 1.5rem; }
+.footer-links a {
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--text); }
+
+.footer-note {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.link-accent { color: var(--accent2); text-decoration: none; }
+.link-accent:hover { text-decoration: underline; }
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  nav { padding: 0 1.25rem; }
+  .nav-links { display: none; }
+  section { padding: 3.5rem 1.25rem; }
+  .hero { padding: 5rem 1.25rem 3.5rem; }
+  .hero-stats { gap: 1.5rem; }
+}
   </style>
 </head>
 <body>
 
-<!-- ── Navigation ── -->
+<!-- ── Nav ── -->
 <nav>
   <a class="nav-brand" href="#">
     <span class="dot"></span>
@@ -559,8 +524,7 @@
   </a>
   <div class="nav-links">
     <a href="#features">Features</a>
-    <a href="#skills">Skills</a>
-    <a href="#phases">7 Phases</a>
+    <a href="#commands">Commands</a>
     <a href="#install">Install</a>
   </div>
   <a class="btn btn-primary" href="#install">Get Started →</a>
@@ -569,38 +533,18 @@
 <!-- ── Hero ── -->
 <header class="hero">
   <div class="container">
-    <div class="hero-badge">
-      ✦ 17 Agent Skills · Power Prompts · Mobile Workflow
-    </div>
-    <h1>
-      The <span>AI Development Toolkit</span><br/>for Serious Builders
-    </h1>
-    <p>
-      Drop a portable set of VS Code Copilot prompts, agent skills, and GitHub Actions
-      into any repo and get a structured, AI-assisted development lifecycle — from idea
-      to shipping.
-    </p>
+    <div class="hero-badge">✦ 17 Skills · 7 Phases · Zero Config</div>
+    <h1>Ship faster with <span>AI-powered skills</span> in any repo</h1>
+    <p>A portable collection of VS Code Copilot prompts, agent skills, and GitHub Actions workflows. Drop them into any repo for a structured AI-assisted development lifecycle — from idea to QA.</p>
     <div class="hero-cta">
-      <a class="btn btn-primary" href="#install">Install in 30 seconds →</a>
+      <a class="btn btn-primary" href="#install">Install Now →</a>
       <a class="btn btn-outline" href="https://github.com/marcoacciarri/ai" target="_blank" rel="noopener">View on GitHub</a>
     </div>
     <div class="hero-stats">
-      <div class="stat">
-        <div class="stat-num">17</div>
-        <div class="stat-label">Agent Skills</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num">7</div>
-        <div class="stat-label">Dev Phases</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num">2</div>
-        <div class="stat-label">Power Prompts</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num">∞</div>
-        <div class="stat-label">Repos Supported</div>
-      </div>
+      <div class="stat"><div class="stat-num">17</div><div class="stat-label">Skills</div></div>
+      <div class="stat"><div class="stat-num">7</div><div class="stat-label">Phases</div></div>
+      <div class="stat"><div class="stat-num">1</div><div class="stat-label">Command Install</div></div>
+      <div class="stat"><div class="stat-num">MIT</div><div class="stat-label">License</div></div>
     </div>
   </div>
 </header>
@@ -609,214 +553,159 @@
 <section id="features">
   <div class="container">
     <div class="section-label">What's included</div>
-    <h2 class="section-title">Everything you need for AI-assisted development</h2>
-    <p class="section-sub">Three batteries-included components that work together to accelerate your workflow.</p>
+    <h2 class="section-title">Everything you need to build with AI</h2>
+    <p class="section-sub">Planning, development, writing, and tooling skills that plug into your existing VS Code workflow.</p>
     <div class="features-grid">
       <div class="feature-card">
-        <div class="feature-icon" aria-hidden="true">🧠</div>
-        <h3>17 Agent Skills</h3>
-        <p>Specialized Copilot agents for planning, TDD, architecture review, refactoring, documentation, and more — each with deep domain knowledge.</p>
+        <div class="feature-icon" aria-hidden="true">🏗️</div>
+        <h3>PRD-Driven Planning</h3>
+        <p>Write PRDs through interactive interviews, then break them into phased implementation plans with tracer-bullet vertical slices.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon" aria-hidden="true">⚡</div>
-        <h3>Power Prompts</h3>
-        <p>The <code style="color:var(--accent2);font-family:monospace">/build</code> orchestrator walks you through all 7 phases. The <code style="color:var(--accent2);font-family:monospace">/prd-create</code> prompt turns requirements into trackable JSON deliverables with acceptance criteria.</p>
+        <div class="feature-icon" aria-hidden="true">🧪</div>
+        <h3>Test-Driven Development</h3>
+        <p>Red-green-refactor loop built in. Triage bugs, identify root causes, and file issues with TDD-based fix plans automatically.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon" aria-hidden="true">📱</div>
         <h3>Mobile Workflow</h3>
-        <p>Manage your entire project from your phone by posting <code style="color:var(--accent2);font-family:monospace">/agent</code> commands as GitHub issue comments. Check progress, queue builds, trigger Copilot — anywhere.</p>
+        <p>Manage your project from your phone. Issue <code>/agent</code> commands via GitHub comments to check status, build issues, and assign Copilot.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon" aria-hidden="true">🔌</div>
-        <h3>Portable by Design</h3>
-        <p>Everything lives in <code style="color:var(--accent2);font-family:monospace">.github/</code>. One installer script drops it into any existing repo — no framework lock-in, no project restructuring required.</p>
+        <div class="feature-icon" aria-hidden="true">🔄</div>
+        <h3>7-Phase Lifecycle</h3>
+        <p>Structured flow from Idea → Research → Prototype → PRD → Kanban → Execution → QA. The <code>/build</code> prompt orchestrates it all.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon" aria-hidden="true">🧪</div>
-        <h3>TDD Built In</h3>
-        <p>The <code style="color:var(--accent2);font-family:monospace">/tdd</code> skill enforces a red-green-refactor loop so Copilot writes tests first, catches regressions, and produces production-grade code by default.</p>
+        <div class="feature-icon" aria-hidden="true">⚡</div>
+        <h3>One-Command Install</h3>
+        <p>Run the installer script from your project directory and select what you need — skills, prompts, workflows, or all three.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon" aria-hidden="true">🗺️</div>
-        <h3>Full Lifecycle Coverage</h3>
-        <p>From fuzzy idea to shipped QA — the toolkit provides structure at every stage: ideation, research, PRD, kanban, execution, and quality review.</p>
+        <div class="feature-icon" aria-hidden="true">🛡️</div>
+        <h3>Safety & Quality</h3>
+        <p>Set up pre-commit hooks, git guardrails that block dangerous commands, and architecture improvement scans — all as skills.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── Skills ── -->
-<section id="skills" class="skills-section">
-  <div class="container">
-    <div class="section-label">Agent Skills</div>
-    <h2 class="section-title">17 skills. Every phase covered.</h2>
-    <p class="section-sub">Invoke any skill from Copilot Chat with a single slash command.</p>
-
-    <div class="skills-grid">
-      <div class="skills-category">Planning &amp; Design</div>
-      <div class="skill-item"><code>/write-a-prd</code><span>Create a PRD via interview, codebase exploration, and module design</span></div>
-      <div class="skill-item"><code>/prd-to-plan</code><span>Turn a PRD into a multi-phase plan using tracer-bullet vertical slices</span></div>
-      <div class="skill-item"><code>/prd-to-issues</code><span>Break a PRD into independently-grabbable GitHub issues</span></div>
-      <div class="skill-item"><code>/grill-me</code><span>Get relentlessly interviewed about a plan until every branch is resolved</span></div>
-      <div class="skill-item"><code>/design-an-interface</code><span>Generate radically different interface designs using parallel sub-agents</span></div>
-      <div class="skill-item"><code>/request-refactor-plan</code><span>Create a detailed refactor plan with tiny commits via interview</span></div>
-
-      <div class="skills-category">Development</div>
-      <div class="skill-item"><code>/tdd</code><span>Test-driven development with strict red-green-refactor loop</span></div>
-      <div class="skill-item"><code>/triage-issue</code><span>Investigate a bug, identify root cause, file a GitHub issue with TDD fix plan</span></div>
-      <div class="skill-item"><code>/improve-codebase-architecture</code><span>Explore codebase for architectural improvements and deeper modules</span></div>
-      <div class="skill-item"><code>/migrate-to-shoehorn</code><span>Migrate test files from <code>as</code> type assertions to @total-typescript/shoehorn</span></div>
-      <div class="skill-item"><code>/scaffold-exercises</code><span>Create exercise directory structures with problems, solutions, and explainers</span></div>
-
-      <div class="skills-category">Tooling &amp; Setup</div>
-      <div class="skill-item"><code>/setup-pre-commit</code><span>Set up Husky pre-commit hooks with lint-staged, Prettier, type checking, tests</span></div>
-      <div class="skill-item"><code>/git-guardrails-claude-code</code><span>Block dangerous git commands before they execute</span></div>
-
-      <div class="skills-category">Writing &amp; Knowledge</div>
-      <div class="skill-item"><code>/write-a-skill</code><span>Create new skills with structure, progressive disclosure, and bundled resources</span></div>
-      <div class="skill-item"><code>/edit-article</code><span>Edit and improve articles by restructuring sections and tightening prose</span></div>
-      <div class="skill-item"><code>/ubiquitous-language</code><span>Extract a DDD-style ubiquitous language glossary from conversation</span></div>
-      <div class="skill-item"><code>/obsidian-vault</code><span>Search, create, and manage notes in an Obsidian vault with wikilinks</span></div>
-    </div>
-  </div>
-</section>
-
-<!-- ── 7 Phases ── -->
-<section id="phases">
-  <div class="container">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start">
-      <div>
-        <div class="section-label">The Framework</div>
-        <h2 class="section-title">Ship with confidence using 7 structured phases</h2>
-        <p class="section-sub" style="margin-bottom:0">
-          The <code style="color:var(--accent2);font-family:monospace">/build</code> prompt orchestrates your entire project through the
-          <a href="https://www.aihero.dev/my-7-phases-of-ai-development" target="_blank" rel="noopener"
-             class="link-accent">7 Phases of AI Development</a> framework — keeping Copilot focused and your
-          codebase clean at every step.
-        </p>
-      </div>
-      <div class="phases-list">
-        <div class="phase-item active">
-          <div class="phase-num">1</div>
-          <div class="phase-content">
-            <div class="phase-title">Idea <span class="phase-badge">→ IDEA.md</span></div>
-            <div class="phase-desc">Refine your concept via structured interview to produce a clear, scoped brief.</div>
-          </div>
-        </div>
-        <div class="phase-item">
-          <div class="phase-num">2</div>
-          <div class="phase-content">
-            <div class="phase-title">Research <span class="phase-badge">optional · → RESEARCH.md</span></div>
-            <div class="phase-desc">Cache external dependency docs so Copilot has fresh context.</div>
-          </div>
-        </div>
-        <div class="phase-item">
-          <div class="phase-num">3</div>
-          <div class="phase-content">
-            <div class="phase-title">Prototype <span class="phase-badge">skipped by default</span></div>
-            <div class="phase-desc">Explore design options with throw-away code before committing to an approach.</div>
-          </div>
-        </div>
-        <div class="phase-item">
-          <div class="phase-num">4</div>
-          <div class="phase-content">
-            <div class="phase-title">PRD <span class="phase-badge">→ prd.json + progress.md</span></div>
-            <div class="phase-desc">Document the end state with acceptance criteria and dependency chains.</div>
-          </div>
-        </div>
-        <div class="phase-item">
-          <div class="phase-num">5</div>
-          <div class="phase-content">
-            <div class="phase-title">Kanban <span class="phase-badge">→ GitHub Issues</span></div>
-            <div class="phase-desc">Break the PRD into issues with dependencies, labels, and parallel work clusters.</div>
-          </div>
-        </div>
-        <div class="phase-item">
-          <div class="phase-num">6</div>
-          <div class="phase-content">
-            <div class="phase-title">Execution</div>
-            <div class="phase-desc">Implement wave by wave using TDD, with Copilot driving each issue to a PR.</div>
-          </div>
-        </div>
-        <div class="phase-item">
-          <div class="phase-num">7</div>
-          <div class="phase-content">
-            <div class="phase-title">QA</div>
-            <div class="phase-desc">Verify quality, create new tickets for findings, and loop back to execution.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── Mobile Workflow ── -->
-<section style="background:var(--bg2)">
+<!-- ── Agent Commands ── -->
+<section id="commands" style="background:var(--bg2)">
   <div class="container">
     <div class="section-label">Mobile Workflow</div>
     <h2 class="section-title">Manage your project from anywhere</h2>
-    <p class="section-sub">Post <code style="color:var(--accent2);font-family:monospace">/agent</code> commands as GitHub issue comments — Copilot handles the rest.</p>
-    <div class="workflow-grid">
-      <div class="workflow-cmd"><code>/agent help</code><p>Show all available commands</p></div>
-      <div class="workflow-cmd"><code>/agent status</code><p>PRD progress summary</p></div>
-      <div class="workflow-cmd"><code>/agent status P1-001</code><p>Detailed status of a specific deliverable</p></div>
-      <div class="workflow-cmd"><code>/agent list</code><p>List all deliverables by phase</p></div>
-      <div class="workflow-cmd"><code>/agent list phase:2</code><p>Filter to a specific phase</p></div>
-      <div class="workflow-cmd"><code>/agent next</code><p>Show next unblocked deliverables ready for work</p></div>
-      <div class="workflow-cmd"><code>/agent build P1-001</code><p>Create an implementation issue and assign Copilot</p></div>
-      <div class="workflow-cmd"><code>/agent build-wave 1</code><p>Create issues for all items in a phase</p></div>
+    <p class="section-sub">Comment on any issue with these commands. A GitHub Actions workflow handles the rest.</p>
+    <div class="items-grid">
+      <div class="items-category">Status & Navigation</div>
+      <div class="item-card"><code>/agent help</code><span>Show all available commands</span></div>
+      <div class="item-card"><code>/agent status</code><span>PRD progress summary</span></div>
+      <div class="item-card"><code>/agent status P1-001</code><span>Detailed status of a specific deliverable</span></div>
+      <div class="item-card"><code>/agent list</code><span>List all deliverables by phase</span></div>
+      <div class="items-category">Build & Execute</div>
+      <div class="item-card"><code>/agent next</code><span>Show next unblocked deliverables ready for work</span></div>
+      <div class="item-card"><code>/agent build P1-001</code><span>Create an implementation issue and assign Copilot</span></div>
+      <div class="item-card"><code>/agent build-wave 1</code><span>Create issues for all items in a phase</span></div>
+      <div class="item-card"><code>/agent list phase:2</code><span>Filter deliverables to a specific phase</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── How it Works ── -->
+<section id="how-it-works">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start">
+      <div>
+        <div class="section-label">How it works</div>
+        <h2 class="section-title">From idea to production in 7 phases</h2>
+        <p class="section-sub" style="margin-bottom:0">The <code>/build</code> prompt walks you through a structured AI-assisted lifecycle. Each phase produces an artifact that feeds the next.</p>
+      </div>
+      <div class="steps-list">
+        <div class="step-item active">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="step-title">Idea <span class="step-badge">IDEA.md</span></div>
+            <div class="step-desc">Refine your concept via a structured interview.</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="step-title">Research <span class="step-badge">optional</span></div>
+            <div class="step-desc">Cache external dependency docs for context.</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <div class="step-title">Prototype <span class="step-badge">optional</span></div>
+            <div class="step-desc">Explore design options before committing.</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <div class="step-title">PRD <span class="step-badge">prd.json</span></div>
+            <div class="step-desc">Document the end state with acceptance criteria.</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <div class="step-title">Kanban</div>
+            <div class="step-desc">Break PRD into GitHub Issues with dependencies.</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">6</div>
+          <div class="step-content">
+            <div class="step-title">Execution</div>
+            <div class="step-desc">Implement wave by wave using TDD.</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">7</div>
+          <div class="step-content">
+            <div class="step-title">QA</div>
+            <div class="step-desc">Verify quality, loop back if needed.</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- ── Install ── -->
-<section id="install" class="install-section">
+<section id="install" style="background:var(--bg2)">
   <div class="container">
     <div class="section-label">Installation</div>
-    <h2 class="section-title">Up and running in 30 seconds</h2>
-    <p class="section-sub">Choose the method that fits your workflow.</p>
-
+    <h2 class="section-title">Up and running in seconds</h2>
     <div class="install-options">
       <div class="install-card featured">
-        <h3>Option 1: Installer Script <span class="tag-recommended">Recommended</span></h3>
-        <p>Clone once, install into any repo. Handles conflicts gracefully and supports selective installs.</p>
+        <h3>Installer Script <span class="tag-recommended">Recommended</span></h3>
+        <p>Clone the repo once, then run the installer from any project. Picks up skills, prompts, and workflows.</p>
         <div class="code-block">
-          <pre><span class="comment"># Clone and install in one step</span>
-<span class="cmd">git clone</span> https://github.com/marcoacciarri/ai.git /tmp/ai-toolkit
-<span class="cmd">/tmp/ai-toolkit/install-agents</span>
+          <pre><span class="comment"># Clone once</span>
+<span class="cmd">git clone</span> https://github.com/marcoacciarri/ai.git /tmp/ai
 
-<span class="comment"># Or install only what you need</span>
-<span class="cmd">./install-agents</span> <span class="flag">skills prompts</span>
-<span class="cmd">./install-agents</span> <span class="flag">--force</span>    <span class="comment"># overwrite</span>
-<span class="cmd">./install-agents</span> <span class="flag">--dry-run</span>  <span class="comment"># preview</span></pre>
+<span class="comment"># From your project directory</span>
+/tmp/ai/<span class="cmd">install-agents</span>
+
+<span class="comment"># Or selectively</span>
+/tmp/ai/<span class="cmd">install-agents</span> <span class="flag">skills prompts</span></pre>
         </div>
       </div>
-
       <div class="install-card">
-        <h3>Option 2: Degit</h3>
-        <p>No clone needed. Pull directly into your <code style="color:var(--accent2);font-family:monospace">.github/</code> folder using degit.</p>
+        <h3>Degit (no clone)</h3>
+        <p>Pull files directly into your project's <code>.github</code> folder — no local clone needed.</p>
         <div class="code-block">
-          <pre><span class="comment"># Install everything</span>
+          <pre><span class="comment"># Everything</span>
 <span class="cmd">npx degit</span> marcoacciarri/ai/.github .github
 
-<span class="comment"># Partial install</span>
-<span class="cmd">npx degit</span> marcoacciarri/ai/.github/skills \
-           .github/skills
-<span class="cmd">npx degit</span> marcoacciarri/ai/.github/prompts \
-           .github/prompts</pre>
+<span class="comment"># Just skills</span>
+<span class="cmd">npx degit</span> marcoacciarri/ai/.github/skills .github/skills</pre>
         </div>
       </div>
-    </div>
-
-    <div style="margin-top:2rem;padding:1.25rem 1.5rem;background:var(--card-bg);border:1px solid var(--border);border-radius:12px;">
-      <h4 style="font-size:0.95rem;margin-bottom:0.75rem">Prerequisites</h4>
-      <ul style="list-style:none;display:flex;flex-direction:column;gap:0.4rem">
-        <li style="font-size:0.88rem;color:var(--muted);display:flex;gap:0.5rem"><span style="color:var(--green)" aria-hidden="true">✓</span> VS Code with GitHub Copilot Chat extension (for prompts and skills)</li>
-        <li style="font-size:0.88rem;color:var(--muted);display:flex;gap:0.5rem"><span style="color:var(--green)" aria-hidden="true">✓</span> A GitHub repository (for the mobile workflow and <code style="color:var(--accent2);font-family:monospace">/agent</code> commands)</li>
-        <li style="font-size:0.88rem;color:var(--muted);display:flex;gap:0.5rem"><span style="color:var(--green)" aria-hidden="true">✓</span> Create an <code style="color:var(--accent2);font-family:monospace">ai-work</code> label in your repo (used by <code style="color:var(--accent2);font-family:monospace">/agent build</code> to tag generated issues)</li>
-        <li style="font-size:0.88rem;color:var(--muted);display:flex;gap:0.5rem"><span style="color:var(--muted)" aria-hidden="true">○</span> Optional: <a href="https://docs.github.com/en/copilot/using-github-copilot/using-copilot-coding-agent" target="_blank" rel="noopener" style="color:var(--accent2)">Copilot Coding Agent</a> enabled for automatic PR generation</li>
-      </ul>
     </div>
   </div>
 </section>
@@ -824,11 +713,11 @@
 <!-- ── CTA ── -->
 <section class="cta-banner">
   <div class="container">
-    <h2>Start building smarter today</h2>
-    <p>One install. Every repo. Structured AI development from idea to QA.</p>
+    <h2>Give your repo an AI-assisted development lifecycle</h2>
+    <p>17 skills, structured workflows, and mobile-friendly project management — one install away.</p>
     <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
-      <a class="btn btn-primary" href="#install">Install Now →</a>
-      <a class="btn btn-outline" href="https://www.aihero.dev/my-7-phases-of-ai-development" target="_blank" rel="noopener">Read the 7 Phases Framework</a>
+      <a class="btn btn-primary" href="#install">Get Started →</a>
+      <a class="btn btn-outline" href="https://github.com/marcoacciarri/ai" target="_blank" rel="noopener">Star on GitHub</a>
     </div>
   </div>
 </section>
@@ -836,15 +725,12 @@
 <!-- ── Footer ── -->
 <footer>
   <div class="footer-inner">
-    <div class="footer-brand">
-      <span style="color:var(--accent)">●</span> AI Dev Toolkit
-    </div>
+    <div class="footer-brand"><span style="color:var(--accent)">●</span> AI Dev Toolkit</div>
     <div class="footer-links">
       <a href="https://github.com/marcoacciarri/ai" target="_blank" rel="noopener">GitHub</a>
-      <a href="https://www.aihero.dev/my-7-phases-of-ai-development" target="_blank" rel="noopener">7 Phases</a>
-      <a href="https://github.com/mattpocock/skills" target="_blank" rel="noopener">Credits</a>
+      <a href="https://www.aihero.dev/my-7-phases-of-ai-development" target="_blank" rel="noopener">7 Phases Framework</a>
     </div>
-    <div class="footer-note">MIT License · Skills adapted from <a href="https://github.com/mattpocock/skills" target="_blank" rel="noopener" style="color:var(--muted)">Matt Pocock</a></div>
+    <div class="footer-note">MIT License</div>
   </div>
 </footer>
 
