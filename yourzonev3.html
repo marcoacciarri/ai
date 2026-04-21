@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yourzone Websites — We Build Websites That Land You More Clients</title>
+  <meta name="description" content="Creative agency specializing in web design, ecommerce, funnels, and photography. Custom websites delivered in 1 week. Starting at €2,000." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet" />
+  <style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* Light theme (default — matching reference) */
+  --accent: #0061ff;
+  --accent-hover: #004dcc;
+  --accent-rgb: 0, 97, 255;
+  --accent-subtle: #dbeaff;
+  --accent-bg: #f0f4ff;
+
+  --dark: #1a1a2e;
+  --dark-deep: #0f0f24;
+  --dark-card: #1c1c38;
+  --dark-border: #2a2a4a;
+  --dark-text: #ffffff;
+  --dark-text-secondary: #b0b0c8;
+
+  --text: #26262c;
+  --text-secondary: #63637c;
+  --bg: #ffffff;
+  --bg-alt: #f3f3ff;
+  --bg-subtle: #fafafe;
+  --border: #e4e4ee;
+  --card-bg: #ffffff;
+  --card-border: #e8e8f0;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: 'Playfair Display', Georgia, serif;
+  line-height: 1.25;
+  font-weight: 700;
+  color: var(--text);
+}
+
+h4, h5, h6 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+}
+
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+ul { list-style: none; }
+
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.section {
+  padding: 6.5rem 0;
+}
+
+.section-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1rem;
+  display: inline-block;
+}
+
+.section-title {
+  font-size: clamp(1.9rem, 3.8vw, 2.8rem);
+  margin-bottom: 1rem;
+}
+
+.section-desc {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  max-width: 580px;
+  line-height: 1.8;
+}
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 0.88rem;
+  padding: 0.85rem 2rem;
+  border-radius: 3px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  letter-spacing: 0.02em;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--text);
+  border: 1.5px solid var(--border);
+}
+
+.btn-outline:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Dark variant */
+.btn-white {
+  background: #fff;
+  color: var(--dark);
+}
+
+.btn-white:hover {
+  background: var(--accent-subtle);
+}
+
+.btn-ghost-white {
+  background: transparent;
+  color: #fff;
+  border: 1.5px solid rgba(255,255,255,0.25);
+}
+
+.btn-ghost-white:hover {
+  border-color: #fff;
+}
+
+/* ── Animations ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ══════════════════════════════════════════
+   NAV
+   ══════════════════════════════════════════ */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2.5rem;
+  background: transparent;
+  transition: all 0.3s ease;
+}
+
+.nav.scrolled {
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 1px 0 var(--border);
+}
+
+/* Nav text color: white on hero, dark when scrolled */
+.nav .nav-links a,
+.nav .nav-logo {
+  color: #fff;
+  transition: color 0.3s ease;
+}
+
+.nav.scrolled .nav-links a,
+.nav.scrolled .nav-logo {
+  color: var(--text);
+}
+
+.nav.scrolled .nav-links a:hover {
+  color: var(--accent);
+}
+
+.nav.scrolled .nav-hamburger span {
+  background: var(--text);
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.nav-logo img {
+  width: 34px; height: 34px;
+  border-radius: 6px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2.2rem;
+}
+
+.nav-links a {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.nav-cta {
+  font-size: 0.8rem !important;
+  padding: 0.55rem 1.3rem !important;
+}
+
+/* Theme toggle */
+.theme-toggle {
+  background: none;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  width: 36px; height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+.nav.scrolled .theme-toggle {
+  border-color: var(--border);
+  color: var(--text-secondary);
+}
+
+.theme-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.theme-toggle .icon-sun { display: block; }
+.theme-toggle .icon-moon { display: none; }
+
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 4px;
+}
+
+.nav-hamburger span {
+  display: block;
+  width: 22px; height: 2px;
+  background: #fff;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 70px; left: 0; right: 0; bottom: 0;
+  background: rgba(255,255,255,0.98);
+  backdrop-filter: blur(16px);
+  z-index: 999;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.8rem;
+}
+
+.mobile-menu.open { display: flex; }
+
+.mobile-menu a {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.mobile-menu a:hover { color: var(--accent); }
+
+/* ══════════════════════════════════════════
+   HERO — Dark background (like reference)
+   ══════════════════════════════════════════ */
+.hero {
+  background: var(--dark-deep);
+  color: var(--dark-text);
+  padding: 10rem 0 6rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(var(--accent-rgb), 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(var(--accent-rgb), 0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.hero .container {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.hero-content { max-width: 540px; }
+
+.hero .section-label {
+  color: var(--accent-subtle);
+  animation: fadeUp 0.6s ease forwards;
+}
+
+.hero h1 {
+  color: #fff;
+  font-size: clamp(2.4rem, 5vw, 3.8rem);
+  margin-bottom: 1.5rem;
+  animation: fadeUp 0.6s ease 0.1s forwards;
+  opacity: 0;
+}
+
+.hero h1 em {
+  color: var(--accent-subtle);
+  font-style: italic;
+}
+
+.hero-desc {
+  color: var(--dark-text-secondary);
+  font-size: 1.02rem;
+  line-height: 1.85;
+  margin-bottom: 2.5rem;
+  animation: fadeUp 0.6s ease 0.2s forwards;
+  opacity: 0;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  animation: fadeUp 0.6s ease 0.3s forwards;
+  opacity: 0;
+}
+
+.hero-visual {
+  animation: fadeUp 0.8s ease 0.15s forwards;
+  opacity: 0;
+}
+
+.hero-image-box {
+  width: 100%;
+  aspect-ratio: 4/3;
+  background: var(--dark-card);
+  border: 1px solid var(--dark-border);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--dark-text-secondary);
+  font-size: 0.85rem;
+  font-weight: 500;
+  position: relative;
+}
+
+.hero-badge {
+  position: absolute;
+  bottom: -20px; left: -20px;
+  background: #fff;
+  color: var(--text);
+  border-radius: 4px;
+  padding: 1rem 1.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+}
+
+.hero-badge strong {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  color: var(--accent);
+}
+
+.hero-badge span {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ══════════════════════════════════════════
+   WHAT WE DO — 3 columns (light bg)
+   ══════════════════════════════════════════ */
+.approach {
+  background: var(--bg);
+}
+
+.approach-header {
+  text-align: center;
+  margin-bottom: 3.5rem;
+}
+
+.approach-header .section-desc {
+  margin: 0 auto;
+}
+
+.approach-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.approach-card {
+  padding: 2.5rem 2rem;
+  border-radius: 4px;
+  background: var(--bg-alt);
+  border: 1px solid var(--card-border);
+  transition: all 0.3s ease;
+}
+
+.approach-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 8px 30px rgba(var(--accent-rgb), 0.08);
+  transform: translateY(-3px);
+}
+
+.approach-icon {
+  width: 50px; height: 50px;
+  border-radius: 4px;
+  background: var(--accent-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  color: var(--accent);
+}
+
+.approach-card h3 {
+  font-size: 1.15rem;
+  margin-bottom: 0.7rem;
+}
+
+.approach-card p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.75;
+}
+
+/* ══════════════════════════════════════════
+   SERVICES — 2x2 grid (alt bg)
+   ══════════════════════════════════════════ */
+.services-section {
+  background: var(--bg-alt);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.services-header {
+  margin-bottom: 3rem;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.service-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 4px;
+  padding: 2.25rem;
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  transition: all 0.3s ease;
+}
+
+.service-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 8px 28px rgba(var(--accent-rgb), 0.07);
+  transform: translateY(-2px);
+}
+
+.service-icon {
+  width: 48px; height: 48px;
+  border-radius: 4px;
+  background: var(--accent-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--accent);
+}
+
+.service-body h3 {
+  font-size: 1.08rem;
+  margin-bottom: 0.5rem;
+}
+
+.service-body p {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.75;
+}
+
+/* ══════════════════════════════════════════
+   LOGOS & RATINGS BAR
+   ══════════════════════════════════════════ */
+.logos-bar {
+  background: var(--bg);
+  padding: 3.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.logos-label {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.logos-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 2.5rem;
+}
+
+.logo-placeholder {
+  width: 100px; height: 36px;
+  border-radius: 3px;
+  background: var(--bg-alt);
+  border: 1px solid var(--card-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.03em;
+}
+
+.ratings-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.rating-item {
+  text-align: center;
+}
+
+.rating-item .number {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.rating-item .stars {
+  color: #f59e0b;
+  font-size: 0.7rem;
+  display: block;
+  margin-top: 2px;
+  letter-spacing: 1px;
+}
+
+.rating-item .label {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+/* ══════════════════════════════════════════
+   TESTIMONIALS
+   ══════════════════════════════════════════ */
+.testimonials {
+  background: var(--bg-alt);
+  border-bottom: 1px solid var(--border);
+}
+
+.testimonials-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.testimonials-header .section-desc {
+  margin: 0 auto;
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.testimonial-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 4px;
+  padding: 2.25rem 2rem;
+}
+
+.testimonial-stars {
+  color: #f59e0b;
+  font-size: 0.8rem;
+  margin-bottom: 1.1rem;
+  letter-spacing: 2px;
+}
+
+.testimonial-card blockquote {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  margin-bottom: 1.25rem;
+  font-style: italic;
+}
+
+.testimonial-author {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text);
+}
+
+/* ══════════════════════════════════════════
+   CTA — Dark section (like reference)
+   ══════════════════════════════════════════ */
+.cta-section {
+  background: var(--dark-deep);
+  color: var(--dark-text);
+}
+
+.cta-section .container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.cta-content .section-label {
+  color: var(--accent-subtle);
+}
+
+.cta-content .section-title {
+  color: #fff;
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+}
+
+.cta-content h3 {
+  color: var(--dark-text-secondary);
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  font-style: italic;
+  margin-bottom: 1.5rem;
+}
+
+.cta-content p {
+  color: var(--dark-text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.85;
+}
+
+.cta-form-card {
+  background: var(--dark-card);
+  border: 1px solid var(--dark-border);
+  border-radius: 4px;
+  padding: 2.5rem;
+}
+
+.cta-form-card h4 {
+  font-size: 1.15rem;
+  color: #fff;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 0.78rem 1rem;
+  background: var(--dark-deep);
+  border: 1px solid var(--dark-border);
+  border-radius: 3px;
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.88rem;
+  transition: border-color 0.3s ease;
+  outline: none;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--accent);
+}
+
+.form-group textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.form-group select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1.5l5 5 5-5' stroke='%23b0b0c8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-right: 2.5rem;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--dark-text-secondary);
+  opacity: 0.6;
+}
+
+.form-submit { width: 100%; margin-top: 0.25rem; }
+
+/* ══════════════════════════════════════════
+   FOOTER — Light
+   ══════════════════════════════════════════ */
+.footer {
+  background: var(--bg);
+  padding: 4rem 0 2rem;
+  border-top: 1px solid var(--border);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
+  gap: 2.5rem;
+  margin-bottom: 3rem;
+}
+
+.footer-brand p {
+  font-size: 0.86rem;
+  color: var(--text-secondary);
+  margin-top: 1rem;
+  line-height: 1.65;
+}
+
+.footer-social {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.footer-social a {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--card-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: all 0.25s ease;
+}
+
+.footer-social a:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.footer h4 {
+  font-size: 0.82rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.footer-links a {
+  display: block;
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+  padding: 0.22rem 0;
+  transition: color 0.25s ease;
+}
+
+.footer-links a:hover { color: var(--accent); }
+
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.76rem;
+  color: var(--text-secondary);
+}
+
+.footer-bottom a { color: var(--text-secondary); }
+.footer-bottom a:hover { color: var(--accent); }
+
+/* ══════════════════════════════════════════
+   DARK THEME OVERRIDE
+   ══════════════════════════════════════════ */
+[data-theme="dark"] {
+  --text: #f0f0f5;
+  --text-secondary: #9a9ab0;
+  --bg: #0a0a12;
+  --bg-alt: #10101a;
+  --bg-subtle: #141420;
+  --border: #222233;
+  --card-bg: #131322;
+  --card-border: #1e1e32;
+  --accent-subtle: #1a3060;
+  --accent-bg: #0e1a30;
+}
+
+[data-theme="dark"] .nav .nav-links a,
+[data-theme="dark"] .nav .nav-logo {
+  color: #fff;
+}
+
+[data-theme="dark"] .nav.scrolled {
+  background: rgba(10, 10, 18, 0.95);
+  box-shadow: 0 1px 0 var(--border);
+}
+
+[data-theme="dark"] .nav.scrolled .nav-links a,
+[data-theme="dark"] .nav.scrolled .nav-logo {
+  color: var(--text);
+}
+
+[data-theme="dark"] .nav.scrolled .nav-links a:hover {
+  color: var(--accent);
+}
+
+[data-theme="dark"] .nav.scrolled .theme-toggle {
+  border-color: var(--border);
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .nav.scrolled .nav-hamburger span {
+  background: var(--text);
+}
+
+[data-theme="dark"] .mobile-menu {
+  background: rgba(10, 10, 18, 0.98);
+}
+
+[data-theme="dark"] .mobile-menu a {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .hero-badge {
+  background: var(--card-bg);
+  color: var(--text);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+}
+
+[data-theme="dark"] .hero-badge span {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .service-card:hover,
+[data-theme="dark"] .approach-card:hover {
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+}
+
+[data-theme="dark"] .theme-toggle .icon-sun { display: none; }
+[data-theme="dark"] .theme-toggle .icon-moon { display: block; }
+
+/* ══════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .hero .container { grid-template-columns: 1fr; text-align: center; }
+  .hero-content { max-width: 100%; }
+  .hero-buttons { justify-content: center; }
+  .hero-visual { max-width: 480px; margin: 2rem auto 0; }
+  .approach-grid { grid-template-columns: 1fr; }
+  .services-grid { grid-template-columns: 1fr; }
+  .cta-section .container { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .nav-hamburger { display: flex; }
+  .section { padding: 4.5rem 0; }
+  .hero { padding: 7rem 0 4rem; }
+  .hero h1 { font-size: clamp(1.9rem, 7vw, 2.8rem); }
+  .hero-badge { position: relative; bottom: auto; left: auto; margin-top: 1.5rem; display: inline-flex; }
+  .testimonials-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
+  .logos-row { gap: 1.25rem; }
+  .ratings-row { gap: 1.25rem; }
+}
+  </style>
+</head>
+<body>
+
+<!-- ── Nav ── -->
+<nav class="nav" id="nav">
+  <a href="#" class="nav-logo">
+    <img src="logo.png" alt="Yourzone" />
+    Yourzone
+  </a>
+  <div class="nav-links">
+    <a href="#approach">What We Do</a>
+    <a href="#services">Services</a>
+    <a href="#testimonials">Testimonials</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+      <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+    </button>
+    <a href="#contact" class="btn btn-primary nav-cta">Get a Free Quote</a>
+  </div>
+  <button class="nav-hamburger" id="hamburger" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ── Mobile Menu ── -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#approach" class="mobile-link">What We Do</a>
+  <a href="#services" class="mobile-link">Services</a>
+  <a href="#testimonials" class="mobile-link">Testimonials</a>
+  <a href="#contact" class="mobile-link">Contact</a>
+  <button class="theme-toggle" id="themeToggleMobile" aria-label="Toggle theme">
+    <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+  </button>
+  <a href="#contact" class="btn btn-primary">Get a Free Quote</a>
+</div>
+
+<!-- ══════════════════════════════════════════
+     HERO — Dark background
+     ══════════════════════════════════════════ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <div class="section-label">Yourzone Websites</div>
+      <h1>We Build Websites That <em>Land You More Clients</em></h1>
+      <p class="hero-desc">From design to launch, we create custom websites, ecommerce stores, and marketing funnels that attract, convert, and grow your business. Delivered in as little as one week.</p>
+      <div class="hero-buttons">
+        <a href="#contact" class="btn btn-white">Get a Free Quote</a>
+        <a href="#services" class="btn btn-ghost-white">Learn More</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-image-box">[ Hero Image ]</div>
+      <div class="hero-badge">
+        <strong>50+</strong>
+        <span>Projects<br/>Delivered</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     WHAT WE DO — 3 columns, light bg
+     ══════════════════════════════════════════ -->
+<section class="section approach" id="approach">
+  <div class="container">
+    <div class="approach-header reveal">
+      <div class="section-label">What We Do</div>
+      <h2 class="section-title">A Website Strategy That Actually Works</h2>
+      <p class="section-desc">We don't believe in cookie-cutter templates. Our approach combines design, technology, and marketing to build websites that drive real business results.</p>
+    </div>
+    <div class="approach-grid">
+      <div class="approach-card reveal">
+        <div class="approach-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+        </div>
+        <h3>Discovery & Strategy</h3>
+        <p>We analyze your business, audience, and competitors to create a website plan built for growth and conversions.</p>
+      </div>
+      <div class="approach-card reveal">
+        <div class="approach-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        </div>
+        <h3>Design & Build</h3>
+        <p>We design and develop your site with conversion in mind — responsive, fast, and tailored to your brand identity.</p>
+      </div>
+      <div class="approach-card reveal">
+        <div class="approach-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <h3>Launch & Grow</h3>
+        <p>We go live and hand you the Yourzone dashboard — manage content, track performance, and open support tickets on your own.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     SERVICES — 2x2 grid, alt bg
+     ══════════════════════════════════════════ -->
+<section class="section services-section" id="services">
+  <div class="container">
+    <div class="services-header reveal">
+      <div class="section-label">Services</div>
+      <h2 class="section-title">Our Web Design & Marketing Services</h2>
+      <p class="section-desc">Whether you're launching, redesigning, or scaling — our services are designed to meet your goals and adapt as your business evolves.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </div>
+        <div class="service-body">
+          <h3>Web Design</h3>
+          <p>Custom websites designed to convert visitors into customers. Responsive, fast, and built on the Yourzone platform with your own dashboard.</p>
+        </div>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+        </div>
+        <div class="service-body">
+          <h3>Ecommerce</h3>
+          <p>Online stores built to sell. Product pages, checkout flows, and inventory management — everything to start selling online.</p>
+        </div>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <div class="service-body">
+          <h3>Funnels & Marketing</h3>
+          <p>Lead generation funnels, automated sales flows, and SEO strategies that bring the right customers to your door.</p>
+        </div>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </div>
+        <div class="service-body">
+          <h3>Photography</h3>
+          <p>Commercial and advertising photography that captures your brand's essence and makes your products shine across all channels.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     LOGOS & RATINGS
+     ══════════════════════════════════════════ -->
+<section class="logos-bar">
+  <div class="container">
+    <div class="logos-label reveal">
+      <div class="section-label">Trusted Partners &amp; Awards</div>
+    </div>
+    <div class="logos-row reveal">
+      <div class="logo-placeholder">James Bros</div>
+      <div class="logo-placeholder">Modeglass</div>
+      <div class="logo-placeholder">Sushità</div>
+      <div class="logo-placeholder">Jackal Milano</div>
+      <div class="logo-placeholder">Ohibò Jewels</div>
+      <div class="logo-placeholder">Physio OB</div>
+      <div class="logo-placeholder">Creative Pulse</div>
+    </div>
+    <div class="ratings-row reveal">
+      <div class="rating-item">
+        <div class="number">4.9</div>
+        <span class="stars">★★★★★</span>
+        <div class="label">20+ Reviews</div>
+      </div>
+      <div class="rating-item">
+        <div class="number">50+</div>
+        <div class="label">Projects Delivered</div>
+      </div>
+      <div class="rating-item">
+        <div class="number">20+</div>
+        <div class="label">Years Combined Experience</div>
+      </div>
+      <div class="rating-item">
+        <div class="number">1 week</div>
+        <div class="label">Average Turnaround</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     TESTIMONIALS
+     ══════════════════════════════════════════ -->
+<section class="section testimonials" id="testimonials">
+  <div class="container">
+    <div class="testimonials-header reveal">
+      <div class="section-label">Client Reviews</div>
+      <h2 class="section-title">What Our Clients Say</h2>
+      <p class="section-desc">Real feedback from businesses we've helped grow online.</p>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card reveal">
+        <div class="testimonial-stars">★★★★★</div>
+        <blockquote>"They delivered our new website in under a week and the results were immediate. We saw a noticeable increase in enquiries within the first month."</blockquote>
+        <div class="testimonial-author">Client Name — James Bros</div>
+      </div>
+      <div class="testimonial-card reveal">
+        <div class="testimonial-stars">★★★★★</div>
+        <blockquote>"The Yourzone dashboard makes it so easy to manage our site. We can update content, track performance, and open support tickets all in one place."</blockquote>
+        <div class="testimonial-author">Client Name — Modeglass</div>
+      </div>
+      <div class="testimonial-card reveal">
+        <div class="testimonial-stars">★★★★★</div>
+        <blockquote>"The photography they arranged completely transformed our brand image. Professional quality that we still use across all our marketing channels."</blockquote>
+        <div class="testimonial-author">Client Name — Sushità Cuisine</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     CTA + FORM — Dark section
+     ══════════════════════════════════════════ -->
+<section class="section cta-section" id="contact">
+  <div class="container">
+    <div class="cta-content reveal">
+      <div class="section-label">Get Started</div>
+      <h2 class="section-title">Ready to Grow Your Business?</h2>
+      <h3>Let's Build a Website That Delivers Results</h3>
+      <p>Tell us about your goals and challenges. We'll create a customized plan designed to attract the right audience and drive real growth for your business. Websites start at €2,000 and are delivered in as little as one week.</p>
+    </div>
+    <div class="cta-form-card reveal">
+      <h4>Let's talk</h4>
+      <form onsubmit="return false;">
+        <div class="form-group">
+          <input type="text" name="name" placeholder="Your name" required />
+        </div>
+        <div class="form-group">
+          <input type="email" name="email" placeholder="you@company.com" required />
+        </div>
+        <div class="form-group">
+          <select name="service" required>
+            <option value="" disabled selected>What are you looking for?</option>
+            <option value="website">Website</option>
+            <option value="ecommerce">Ecommerce</option>
+            <option value="funnel">Funnel</option>
+            <option value="photography">Photography</option>
+            <option value="not-sure">Not sure yet</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <textarea name="message" placeholder="Tell us about your project..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary form-submit">Get a Quote</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     FOOTER — Light
+     ══════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo" style="color: var(--text);">
+          <img src="logo.png" alt="Yourzone" width="30" height="30" />
+          Yourzone
+        </a>
+        <p>We're a results-driven creative agency helping ambitious businesses grow through custom websites, ecommerce, and marketing.</p>
+        <div class="footer-social">
+          <a href="#" aria-label="Instagram">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+          <a href="#" aria-label="LinkedIn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-4 0v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+          <a href="#" aria-label="Facebook">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <div class="footer-links">
+          <a href="#services">Web Design</a>
+          <a href="#services">Ecommerce</a>
+          <a href="#services">Funnels & Marketing</a>
+          <a href="#services">Photography</a>
+          <a href="#services">SEO</a>
+        </div>
+      </div>
+      <div>
+        <h4>Agency</h4>
+        <div class="footer-links">
+          <a href="#approach">What We Do</a>
+          <a href="#testimonials">Testimonials</a>
+          <a href="#contact">Contact Us</a>
+        </div>
+      </div>
+      <div>
+        <h4>Contact Info</h4>
+        <div class="footer-links">
+          <a href="mailto:hello@yourzone.website">hello@yourzone.website</a>
+          <a href="https://yourzone.website" target="_blank" rel="noopener">yourzone.website</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Yourzone Websites</span>
+      <a href="#">Privacy Policy</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── Theme ──
+function setTheme(t) {
+  if (t === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+  else document.documentElement.removeAttribute('data-theme');
+  localStorage.setItem('yz-theme', t);
+}
+function toggleTheme() {
+  setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+}
+var saved = localStorage.getItem('yz-theme');
+if (saved) setTheme(saved);
+
+document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+document.getElementById('themeToggleMobile').addEventListener('click', toggleTheme);
+
+// ── Nav scroll ──
+var nav = document.getElementById('nav');
+window.addEventListener('scroll', function() {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// ── Mobile menu ──
+var hamburger = document.getElementById('hamburger');
+var mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', function() { mobileMenu.classList.toggle('open'); });
+document.querySelectorAll('.mobile-link').forEach(function(a) {
+  a.addEventListener('click', function() { mobileMenu.classList.remove('open'); });
+});
+
+// ── Scroll reveal ──
+var ro = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting) {
+      var siblings = e.target.parentElement.querySelectorAll('.reveal');
+      var idx = Array.from(siblings).indexOf(e.target);
+      setTimeout(function() { e.target.classList.add('visible'); }, idx * 100);
+      ro.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+document.querySelectorAll('.reveal').forEach(function(el) { ro.observe(el); });
+</script>
+</body>
+</html>

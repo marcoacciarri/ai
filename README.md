@@ -13,7 +13,7 @@ Drop these into any repo to get a structured AI-assisted development lifecycle �
 | `/build`      | Orchestrates the full 7-phase lifecycle: Idea → Research → Prototype → PRD → Kanban → Execution → QA                        |
 | `/prd-create` | Converts feature requirements into a structured `prd.json` with trackable items, acceptance criteria, and dependency chains |
 
-### Skills (18 total)
+### Skills (17 total)
 
 **Planning & Design**
 
@@ -88,7 +88,7 @@ git clone https://github.com/marcoacciarri/ai.git /tmp/ai
 #### Selective Install
 
 ```bash
-./install-agents skills           # Skills only (18 skills)
+./install-agents skills           # Skills only (17 skills)
 ./install-agents prompts          # Prompts only (/build, /prd-create)
 ./install-agents workflow         # Mobile workflow only (/agent commands)
 ./install-agents skills prompts   # Mix and match
@@ -142,6 +142,23 @@ The `/build` prompt walks you through:
 5. **Kanban** — Break PRD into GitHub Issues with dependencies and parallel work clusters
 6. **Execution** — Implement wave by wave using TDD
 7. **QA** — Verify quality, create new tickets for findings, loop back to execution
+
+## Deploying Your Website
+
+The `site/` folder is where your website lives. Add your HTML, CSS, JS, and images there. A GitHub Actions workflow (`.github/workflows/deploy-pages.yml`) automatically deploys the `site/` folder to GitHub Pages whenever its contents change on `main`.
+
+### Setup
+
+1. Clone or fork this repo
+2. Add your website files to the `site/` folder
+3. Go to your repo's **Settings → Pages → Source** and select **GitHub Actions**
+4. Push to `main`
+
+Your site will be live at `https://<your-username>.github.io/<repo-name>/`.
+
+You can also trigger a deploy manually from the **Actions** tab using the "Run workflow" button.
+
+> **Tip:** You can optionally add a custom domain in the same Pages settings.
 
 ## Credits
 

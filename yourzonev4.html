@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yourzone Websites — We Build Websites That Land You More Clients</title>
+  <meta name="description" content="Creative agency specializing in web design, ecommerce, funnels, and photography. Custom websites delivered in 1 week. Starting at €2,000." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* ── Colors (extracted from reference) ── */
+  --color-primary: #3535de;
+  --color-primary-hover: #2c2cc9;
+  --color-primary-rgb: 53, 53, 222;
+  --color-heading: #26262c;
+  --color-body: #63637c;
+  --color-body-rgb: 99, 99, 124;
+  --color-bg-light: #f3f3ff;
+  --color-bg-white: #ffffff;
+  --color-highlight: #d7d7ff;
+  --color-dark: #121240;
+  --color-dark-rgb: 18, 18, 64;
+  --color-pale: #BFD1FF;
+  --color-border: #e4e4ee;
+  --color-dark-border: #2a2a5a;
+  --color-dark-card: #1a1a42;
+  --color-dark-text-secondary: #9a9ab8;
+
+  /* ── Typography (extracted) ── */
+  --font-body: 'Montserrat', sans-serif;
+  --font-heading: 'Heebo', sans-serif;
+  --font-size-body: 1rem;
+  --font-weight-body: 400;
+  --line-height-body: 1.65em;
+  --font-size-h1: clamp(2.6rem, 5.5vw, 4.25rem);
+  --font-size-h2: clamp(2rem, 4vw, 3.5rem);
+  --font-size-h3: 1.75rem;
+  --font-size-h4: 1.625rem;
+  --font-weight-heading: 500;
+  --line-height-heading: 1.2em;
+  --font-size-button: 0.9375rem;
+  --font-weight-button: 500;
+  --font-size-label: 0.875rem;
+
+  /* ── Spacing (extracted) ── */
+  --container-width: 1200px;
+  --gap: 24px;
+  --gap-sm: 8px;
+  --section-padding: 80px;
+  --button-padding-y: 15px;
+  --button-padding-x: 24px;
+
+  /* ── Shape (extracted) ── */
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-button: 8px;
+  --radius-card: 0px;
+
+  /* ── Transitions (extracted) ── */
+  --transition: all 0.2s;
+  --transition-slow: all 0.3s;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-body);
+  line-height: var(--line-height-body);
+  background: var(--color-bg-white);
+  color: var(--color-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-heading);
+  line-height: var(--line-height-heading);
+  color: var(--color-body);
+}
+
+h1 { font-size: var(--font-size-h1); }
+h2 { font-size: var(--font-size-h2); }
+h3 { font-size: var(--font-size-h3); line-height: 1.3em; }
+h4 { font-size: var(--font-size-h4); }
+
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+ul { list-style: none; }
+
+.container {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.section {
+  padding: var(--section-padding) 0;
+}
+
+/* ── Section Label ── */
+.section-label {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-label);
+  font-weight: var(--font-weight-button);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+  display: inline-block;
+}
+
+.section-desc {
+  font-size: var(--font-size-body);
+  color: var(--color-body);
+  max-width: 600px;
+  line-height: var(--line-height-body);
+}
+
+/* ── Buttons (extracted: Heebo 500, 15px/24px padding, 8px radius) ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-button);
+  font-size: var(--font-size-button);
+  line-height: 1em;
+  padding: var(--button-padding-y) var(--button-padding-x);
+  border-radius: var(--radius-button);
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+  letter-spacing: 0.01em;
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+  border: 1px solid transparent;
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-hover);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--color-body);
+  border: 1px solid var(--color-border);
+}
+
+.btn-outline:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.btn-white {
+  background: #fff;
+  color: var(--color-heading);
+  border: 1px solid transparent;
+}
+
+.btn-white:hover {
+  background: var(--color-highlight);
+}
+
+.btn-ghost-white {
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.25);
+}
+
+.btn-ghost-white:hover {
+  border-color: #fff;
+}
+
+/* ── Reveal Animation ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ══════════════════════════════════════════
+   NAV
+   ══════════════════════════════════════════ */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  background: transparent;
+  transition: var(--transition-slow);
+}
+
+.nav.scrolled {
+  background: rgba(255,255,255,0.97);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.nav .nav-links a,
+.nav .nav-logo {
+  color: #fff;
+  transition: color 0.3s ease;
+}
+
+.nav.scrolled .nav-links a,
+.nav.scrolled .nav-logo {
+  color: var(--color-body);
+}
+
+.nav.scrolled .nav-links a:hover {
+  color: var(--color-primary);
+}
+
+.nav.scrolled .nav-hamburger span {
+  background: var(--color-heading);
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.nav-logo img {
+  width: 32px; height: 32px;
+  border-radius: var(--radius-md);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+}
+
+.nav-links a {
+  font-family: var(--font-body);
+  font-size: var(--font-size-label);
+  font-weight: 500;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav .nav-cta {
+  font-size: 13px;
+  padding: 10px 18px;
+}
+
+/* Theme toggle */
+.theme-toggle {
+  background: none;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  width: 36px; height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #fff;
+  transition: var(--transition);
+}
+
+.nav.scrolled .theme-toggle {
+  border-color: var(--color-border);
+  color: var(--color-body);
+}
+
+.theme-toggle:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.theme-toggle .icon-sun { display: block; }
+.theme-toggle .icon-moon { display: none; }
+
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 4px;
+}
+
+.nav-hamburger span {
+  display: block;
+  width: 22px; height: 2px;
+  background: #fff;
+  border-radius: 1px;
+  transition: var(--transition);
+}
+
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 72px; left: 0; right: 0; bottom: 0;
+  background: rgba(255,255,255,0.98);
+  backdrop-filter: blur(16px);
+  z-index: 999;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.mobile-menu.open { display: flex; }
+
+.mobile-menu a {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: var(--color-body);
+}
+
+.mobile-menu a:hover { color: var(--color-primary); }
+
+/* ══════════════════════════════════════════
+   HERO — Dark bg (#121240)
+   ══════════════════════════════════════════ */
+.hero {
+  background: var(--color-dark);
+  padding: 10rem 0 6rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    radial-gradient(ellipse at 25% 50%, rgba(var(--color-primary-rgb), 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse at 75% 30%, rgba(var(--color-primary-rgb), 0.04) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.hero .container {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.hero-content { max-width: 560px; }
+
+.hero .section-label {
+  color: var(--color-highlight);
+  animation: fadeUp 0.5s ease forwards;
+}
+
+.hero h1 {
+  color: #fff;
+  margin-bottom: 1.5rem;
+  animation: fadeUp 0.5s ease 0.08s forwards;
+  opacity: 0;
+}
+
+.hero h1 em {
+  color: var(--color-highlight);
+  font-style: italic;
+}
+
+.hero-desc {
+  color: var(--color-dark-text-secondary);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  margin-bottom: 2.5rem;
+  animation: fadeUp 0.5s ease 0.16s forwards;
+  opacity: 0;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  animation: fadeUp 0.5s ease 0.24s forwards;
+  opacity: 0;
+}
+
+.hero-visual {
+  animation: fadeUp 0.6s ease 0.12s forwards;
+  opacity: 0;
+}
+
+.hero-image-box {
+  width: 100%;
+  aspect-ratio: 4/3;
+  background: var(--color-dark-card);
+  border: 1px solid var(--color-dark-border);
+  border-radius: var(--radius-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-dark-text-secondary);
+  font-size: var(--font-size-label);
+  font-weight: 500;
+  position: relative;
+}
+
+.hero-badge {
+  position: absolute;
+  bottom: -20px; left: -20px;
+  background: #fff;
+  color: var(--color-heading);
+  border-radius: var(--radius-button);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hero-badge strong {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.hero-badge span {
+  font-size: 0.72rem;
+  color: var(--color-body);
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ══════════════════════════════════════════
+   WHAT WE DO — 3 columns, white bg
+   ══════════════════════════════════════════ */
+.approach {
+  background: var(--color-bg-white);
+}
+
+.approach-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.approach-header .section-desc {
+  margin: 0 auto;
+}
+
+.approach-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap);
+}
+
+.approach-card {
+  padding: 36px 28px;
+  border-radius: var(--radius-card);
+  background: var(--color-bg-light);
+  transition: var(--transition);
+}
+
+.approach-card:hover {
+  transform: translateY(-2px);
+}
+
+.approach-icon {
+  width: 52px; height: 52px;
+  border-radius: var(--radius-button);
+  background: var(--color-highlight);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  color: var(--color-primary);
+}
+
+.approach-card h3 {
+  font-size: 1.15rem;
+  margin-bottom: 10px;
+}
+
+.approach-card p {
+  font-size: var(--font-size-label);
+  color: var(--color-body);
+  line-height: var(--line-height-body);
+}
+
+/* ══════════════════════════════════════════
+   SERVICES — 2x2 grid, light purple bg
+   ══════════════════════════════════════════ */
+.services-section {
+  background: var(--color-bg-light);
+}
+
+.services-header {
+  margin-bottom: 48px;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--gap);
+}
+
+.service-card {
+  background: var(--color-bg-white);
+  border-radius: var(--radius-card);
+  padding: 32px;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  transition: var(--transition);
+}
+
+.service-card:hover {
+  transform: translateY(-2px);
+}
+
+.service-icon {
+  width: 48px; height: 48px;
+  border-radius: var(--radius-button);
+  background: var(--color-highlight);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--color-primary);
+}
+
+.service-body h3 {
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+
+.service-body p {
+  font-size: var(--font-size-label);
+  color: var(--color-body);
+  line-height: var(--line-height-body);
+}
+
+/* ══════════════════════════════════════════
+   LOGOS & RATINGS BAR
+   ══════════════════════════════════════════ */
+.logos-bar {
+  background: var(--color-bg-white);
+  padding: 48px 0;
+}
+
+.logos-label {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.logos-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  flex-wrap: wrap;
+  margin-bottom: 36px;
+}
+
+.logo-placeholder {
+  width: 100px; height: 36px;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--color-body);
+  letter-spacing: 0.03em;
+}
+
+.ratings-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.rating-item {
+  text-align: center;
+}
+
+.rating-item .number {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-heading);
+}
+
+.rating-item .stars {
+  color: #f59e0b;
+  font-size: 0.7rem;
+  display: block;
+  margin-top: 2px;
+  letter-spacing: 1px;
+}
+
+.rating-item .label {
+  font-size: 0.72rem;
+  color: var(--color-body);
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+/* ══════════════════════════════════════════
+   TESTIMONIALS
+   ══════════════════════════════════════════ */
+.testimonials {
+  background: var(--color-bg-light);
+}
+
+.testimonials-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.testimonials-header .section-desc {
+  margin: 0 auto;
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap);
+}
+
+.testimonial-card {
+  background: var(--color-bg-white);
+  border-radius: var(--radius-card);
+  padding: 32px 28px;
+}
+
+.testimonial-stars {
+  color: #f59e0b;
+  font-size: 0.8rem;
+  margin-bottom: 16px;
+  letter-spacing: 2px;
+}
+
+.testimonial-card blockquote {
+  font-size: var(--font-size-label);
+  color: var(--color-body);
+  line-height: var(--line-height-body);
+  margin-bottom: 20px;
+  font-style: italic;
+}
+
+.testimonial-author {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-heading);
+}
+
+/* ══════════════════════════════════════════
+   CTA — Dark section (#121240)
+   ══════════════════════════════════════════ */
+.cta-section {
+  background: var(--color-dark);
+}
+
+.cta-section .container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.cta-content .section-label {
+  color: var(--color-highlight);
+}
+
+.cta-content h2 {
+  color: #fff;
+}
+
+.cta-content h3 {
+  color: var(--color-dark-text-secondary);
+  font-size: 1.1rem;
+  font-weight: 400;
+  font-style: italic;
+  margin-bottom: 1.25rem;
+}
+
+.cta-content p {
+  color: var(--color-dark-text-secondary);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+}
+
+.cta-form-card {
+  background: var(--color-dark-card);
+  border: 1px solid var(--color-dark-border);
+  border-radius: var(--radius-card);
+  padding: 36px;
+}
+
+.cta-form-card h4 {
+  font-size: 1.15rem;
+  color: #fff;
+  margin-bottom: 24px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--color-dark-border);
+  border-radius: var(--radius-md);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: var(--font-size-label);
+  transition: border-color 0.2s ease;
+  outline: none;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--color-primary);
+}
+
+.form-group textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.form-group select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1.5l5 5 5-5' stroke='%239a9ab8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 40px;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--color-dark-text-secondary);
+  opacity: 0.6;
+}
+
+.form-submit { width: 100%; margin-top: 4px; }
+
+/* ══════════════════════════════════════════
+   FOOTER — Light
+   ══════════════════════════════════════════ */
+.footer {
+  background: var(--color-bg-white);
+  padding: 56px 0 24px;
+  border-top: 1px solid var(--color-border);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
+  gap: 32px;
+  margin-bottom: 40px;
+}
+
+.footer-brand p {
+  font-size: var(--font-size-label);
+  color: var(--color-body);
+  margin-top: 14px;
+  line-height: var(--line-height-body);
+}
+
+.footer-social {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.footer-social a {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-body);
+  transition: var(--transition);
+}
+
+.footer-social a:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.footer h4 {
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-bottom: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-heading);
+}
+
+.footer-links a {
+  display: block;
+  font-size: var(--font-size-label);
+  color: var(--color-body);
+  padding: 3px 0;
+  transition: color 0.2s ease;
+}
+
+.footer-links a:hover { color: var(--color-primary); }
+
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 24px;
+  border-top: 1px solid var(--color-border);
+  font-size: 0.76rem;
+  color: var(--color-body);
+}
+
+.footer-bottom a { color: var(--color-body); }
+.footer-bottom a:hover { color: var(--color-primary); }
+
+/* ══════════════════════════════════════════
+   DARK THEME OVERRIDE
+   ══════════════════════════════════════════ */
+[data-theme="dark"] {
+  --color-body: #9a9ab0;
+  --color-heading: #e8e8f0;
+  --color-bg-white: #0a0a14;
+  --color-bg-light: #0f0f1c;
+  --color-highlight: #1e1e48;
+  --color-border: #1c1c34;
+  --color-dark-card: #111128;
+  --color-dark-border: #1a1a3a;
+}
+
+[data-theme="dark"] .nav .nav-links a,
+[data-theme="dark"] .nav .nav-logo {
+  color: #fff;
+}
+
+[data-theme="dark"] .nav.scrolled {
+  background: rgba(10, 10, 20, 0.97);
+  border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .nav.scrolled .nav-links a,
+[data-theme="dark"] .nav.scrolled .nav-logo {
+  color: var(--color-body);
+}
+
+[data-theme="dark"] .nav.scrolled .nav-links a:hover {
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .nav.scrolled .theme-toggle {
+  border-color: var(--color-border);
+  color: var(--color-body);
+}
+
+[data-theme="dark"] .nav.scrolled .nav-hamburger span {
+  background: var(--color-heading);
+}
+
+[data-theme="dark"] .mobile-menu {
+  background: rgba(10, 10, 20, 0.98);
+}
+
+[data-theme="dark"] .mobile-menu a {
+  color: var(--color-body);
+}
+
+[data-theme="dark"] .hero-badge {
+  background: var(--color-dark-card);
+}
+
+[data-theme="dark"] .hero-badge span {
+  color: var(--color-body);
+}
+
+[data-theme="dark"] .theme-toggle .icon-sun { display: none; }
+[data-theme="dark"] .theme-toggle .icon-moon { display: block; }
+
+/* ══════════════════════════════════════════
+   RESPONSIVE — breakpoints: 544px, 921px
+   ══════════════════════════════════════════ */
+@media (max-width: 921px) {
+  .hero .container { grid-template-columns: 1fr; text-align: center; }
+  .hero-content { max-width: 100%; }
+  .hero-buttons { justify-content: center; }
+  .hero-visual { max-width: 480px; margin: 2rem auto 0; }
+  .approach-grid { grid-template-columns: 1fr; }
+  .services-grid { grid-template-columns: 1fr; }
+  .cta-section .container { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 544px) {
+  .nav-links { display: none; }
+  .nav-hamburger { display: flex; }
+  .nav { padding: 0 24px; }
+  .section { padding: 56px 0; }
+  .hero { padding: 7rem 0 4rem; }
+  .hero-badge { position: relative; bottom: auto; left: auto; margin-top: 1.5rem; display: inline-flex; }
+  .testimonials-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+  .logos-row { gap: 16px; }
+  .ratings-row { gap: 16px; }
+}
+  </style>
+</head>
+<body>
+
+<!-- ── Nav ── -->
+<nav class="nav" id="nav">
+  <a href="#" class="nav-logo">
+    <img src="logo.png" alt="Yourzone" />
+    Yourzone
+  </a>
+  <div class="nav-links">
+    <a href="#approach">What We Do</a>
+    <a href="#services">Services</a>
+    <a href="#testimonials">Testimonials</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+      <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+    </button>
+    <a href="#contact" class="btn btn-primary nav-cta">Get a Free Quote</a>
+  </div>
+  <button class="nav-hamburger" id="hamburger" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ── Mobile Menu ── -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#approach" class="mobile-link">What We Do</a>
+  <a href="#services" class="mobile-link">Services</a>
+  <a href="#testimonials" class="mobile-link">Testimonials</a>
+  <a href="#contact" class="mobile-link">Contact</a>
+  <button class="theme-toggle" id="themeToggleMobile" aria-label="Toggle theme">
+    <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+  </button>
+  <a href="#contact" class="btn btn-primary">Get a Free Quote</a>
+</div>
+
+<!-- ══════════════════════════════════════════
+     HERO — Dark background (#121240)
+     ══════════════════════════════════════════ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <div class="section-label">Yourzone Websites</div>
+      <h1>We Build Websites That <em>Land You More Clients</em></h1>
+      <p class="hero-desc">From design to launch, we create custom websites, ecommerce stores, and marketing funnels that attract, convert, and grow your business. Delivered in as little as one week.</p>
+      <div class="hero-buttons">
+        <a href="#contact" class="btn btn-white">Get a Free Quote</a>
+        <a href="#services" class="btn btn-ghost-white">Learn More</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-image-box">[ Hero Image ]</div>
+      <div class="hero-badge">
+        <strong>50+</strong>
+        <span>Projects<br/>Delivered</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     WHAT WE DO — 3 columns, white bg
+     ══════════════════════════════════════════ -->
+<section class="section approach" id="approach">
+  <div class="container">
+    <div class="approach-header reveal">
+      <div class="section-label">What We Do</div>
+      <h2>A Website Strategy That Actually Works</h2>
+      <p class="section-desc">We don't believe in cookie-cutter templates. Our approach combines design, technology, and marketing to build websites that drive real business results.</p>
+    </div>
+    <div class="approach-grid">
+      <div class="approach-card reveal">
+        <div class="approach-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+        </div>
+        <h3>Discovery &amp; Strategy</h3>
+        <p>We analyze your business, audience, and competitors to create a website plan built for growth and conversions.</p>
+      </div>
+      <div class="approach-card reveal">
+        <div class="approach-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        </div>
+        <h3>Design &amp; Build</h3>
+        <p>We design and develop your site with conversion in mind — responsive, fast, and tailored to your brand identity.</p>
+      </div>
+      <div class="approach-card reveal">
+        <div class="approach-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <h3>Launch &amp; Grow</h3>
+        <p>We go live and hand you the Yourzone dashboard — manage content, track performance, and open support tickets on your own.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     SERVICES — 2x2 grid, lavender bg
+     ══════════════════════════════════════════ -->
+<section class="section services-section" id="services">
+  <div class="container">
+    <div class="services-header reveal">
+      <div class="section-label">Services</div>
+      <h2>Our Web Design &amp; Marketing Services</h2>
+      <p class="section-desc">Whether you're launching, redesigning, or scaling — our services are designed to meet your goals and adapt as your business evolves.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </div>
+        <div class="service-body">
+          <h3>Web Design</h3>
+          <p>Custom websites designed to convert visitors into customers. Responsive, fast, and built on the Yourzone platform with your own dashboard.</p>
+        </div>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+        </div>
+        <div class="service-body">
+          <h3>Ecommerce</h3>
+          <p>Online stores built to sell. Product pages, checkout flows, and inventory management — everything to start selling online.</p>
+        </div>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <div class="service-body">
+          <h3>Funnels &amp; Marketing</h3>
+          <p>Lead generation funnels, automated sales flows, and SEO strategies that bring the right customers to your door.</p>
+        </div>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </div>
+        <div class="service-body">
+          <h3>Photography</h3>
+          <p>Commercial and advertising photography that captures your brand's essence and makes your products shine across all channels.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     LOGOS & RATINGS
+     ══════════════════════════════════════════ -->
+<section class="logos-bar">
+  <div class="container">
+    <div class="logos-label reveal">
+      <div class="section-label">Trusted Partners &amp; Awards</div>
+    </div>
+    <div class="logos-row reveal">
+      <div class="logo-placeholder">James Bros</div>
+      <div class="logo-placeholder">Modeglass</div>
+      <div class="logo-placeholder">Sushità</div>
+      <div class="logo-placeholder">Jackal Milano</div>
+      <div class="logo-placeholder">Ohibò Jewels</div>
+      <div class="logo-placeholder">Physio OB</div>
+      <div class="logo-placeholder">Creative Pulse</div>
+    </div>
+    <div class="ratings-row reveal">
+      <div class="rating-item">
+        <div class="number">4.9</div>
+        <span class="stars">★★★★★</span>
+        <div class="label">20+ Reviews</div>
+      </div>
+      <div class="rating-item">
+        <div class="number">50+</div>
+        <div class="label">Projects Delivered</div>
+      </div>
+      <div class="rating-item">
+        <div class="number">20+</div>
+        <div class="label">Years Combined Experience</div>
+      </div>
+      <div class="rating-item">
+        <div class="number">1 week</div>
+        <div class="label">Average Turnaround</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     TESTIMONIALS
+     ══════════════════════════════════════════ -->
+<section class="section testimonials" id="testimonials">
+  <div class="container">
+    <div class="testimonials-header reveal">
+      <div class="section-label">Client Reviews</div>
+      <h2>What Our Clients Say</h2>
+      <p class="section-desc">Real feedback from businesses we've helped grow online.</p>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card reveal">
+        <div class="testimonial-stars">★★★★★</div>
+        <blockquote>"They delivered our new website in under a week and the results were immediate. We saw a noticeable increase in enquiries within the first month."</blockquote>
+        <div class="testimonial-author">Client Name — James Bros</div>
+      </div>
+      <div class="testimonial-card reveal">
+        <div class="testimonial-stars">★★★★★</div>
+        <blockquote>"The Yourzone dashboard makes it so easy to manage our site. We can update content, track performance, and open support tickets all in one place."</blockquote>
+        <div class="testimonial-author">Client Name — Modeglass</div>
+      </div>
+      <div class="testimonial-card reveal">
+        <div class="testimonial-stars">★★★★★</div>
+        <blockquote>"The photography they arranged completely transformed our brand image. Professional quality that we still use across all our marketing channels."</blockquote>
+        <div class="testimonial-author">Client Name — Sushità Cuisine</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     CTA + FORM — Dark section (#121240)
+     ══════════════════════════════════════════ -->
+<section class="section cta-section" id="contact">
+  <div class="container">
+    <div class="cta-content reveal">
+      <div class="section-label">Get Started</div>
+      <h2>Ready to Grow Your Business?</h2>
+      <h3>Let's Build a Website That Delivers Results</h3>
+      <p>Tell us about your goals and challenges. We'll create a customized plan designed to attract the right audience and drive real growth for your business. Websites start at €2,000 and are delivered in as little as one week.</p>
+    </div>
+    <div class="cta-form-card reveal">
+      <h4>Let's talk</h4>
+      <form onsubmit="return false;">
+        <div class="form-group">
+          <input type="text" name="name" placeholder="Your name" required />
+        </div>
+        <div class="form-group">
+          <input type="email" name="email" placeholder="you@company.com" required />
+        </div>
+        <div class="form-group">
+          <select name="service" required>
+            <option value="" disabled selected>What are you looking for?</option>
+            <option value="website">Website</option>
+            <option value="ecommerce">Ecommerce</option>
+            <option value="funnel">Funnel</option>
+            <option value="photography">Photography</option>
+            <option value="not-sure">Not sure yet</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <textarea name="message" placeholder="Tell us about your project..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary form-submit">Get a Quote</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     FOOTER — Light
+     ══════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo" style="color: var(--color-heading);">
+          <img src="logo.png" alt="Yourzone" width="30" height="30" />
+          Yourzone
+        </a>
+        <p>We're a results-driven creative agency helping ambitious businesses grow through custom websites, ecommerce, and marketing.</p>
+        <div class="footer-social">
+          <a href="#" aria-label="Instagram">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+          <a href="#" aria-label="LinkedIn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-4 0v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+          <a href="#" aria-label="Facebook">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <div class="footer-links">
+          <a href="#services">Web Design</a>
+          <a href="#services">Ecommerce</a>
+          <a href="#services">Funnels &amp; Marketing</a>
+          <a href="#services">Photography</a>
+          <a href="#services">SEO</a>
+        </div>
+      </div>
+      <div>
+        <h4>Agency</h4>
+        <div class="footer-links">
+          <a href="#approach">What We Do</a>
+          <a href="#testimonials">Testimonials</a>
+          <a href="#contact">Contact Us</a>
+        </div>
+      </div>
+      <div>
+        <h4>Contact Info</h4>
+        <div class="footer-links">
+          <a href="mailto:hello@yourzone.website">hello@yourzone.website</a>
+          <a href="https://yourzone.website" target="_blank" rel="noopener">yourzone.website</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Yourzone Websites</span>
+      <a href="#">Privacy Policy</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── Theme ──
+function setTheme(t) {
+  if (t === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+  else document.documentElement.removeAttribute('data-theme');
+  localStorage.setItem('yz-theme', t);
+}
+function toggleTheme() {
+  setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+}
+var saved = localStorage.getItem('yz-theme');
+if (saved) setTheme(saved);
+
+document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+document.getElementById('themeToggleMobile').addEventListener('click', toggleTheme);
+
+// ── Nav scroll ──
+var nav = document.getElementById('nav');
+window.addEventListener('scroll', function() {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// ── Mobile menu ──
+var hamburger = document.getElementById('hamburger');
+var mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', function() { mobileMenu.classList.toggle('open'); });
+document.querySelectorAll('.mobile-link').forEach(function(a) {
+  a.addEventListener('click', function() { mobileMenu.classList.remove('open'); });
+});
+
+// ── Scroll reveal ──
+var ro = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting) {
+      var siblings = e.target.parentElement.querySelectorAll('.reveal');
+      var idx = Array.from(siblings).indexOf(e.target);
+      setTimeout(function() { e.target.classList.add('visible'); }, idx * 100);
+      ro.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+document.querySelectorAll('.reveal').forEach(function(el) { ro.observe(el); });
+</script>
+</body>
+</html>

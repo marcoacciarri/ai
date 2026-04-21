@@ -4,8 +4,8 @@ set -euo pipefail
 # AI Development Toolkit Installer
 # Installs prompts, skills, and workflows into a target repo's .github/ directory.
 
-REPO_URL="https://github.com/marcoacciarri/ai-toolkit"
-RAW_BASE="https://raw.githubusercontent.com/marcoacciarri/ai-toolkit/main"
+REPO_URL="https://github.com/marcoacciarri/ai"
+RAW_BASE="https://raw.githubusercontent.com/marcoacciarri/ai/main"
 
 # Colors
 RED='\033[0;31m'
@@ -22,7 +22,7 @@ ${BOLD}AI Development Toolkit Installer${NC}
 Usage: ./install-agents [OPTIONS] [COMPONENTS...]
 
 Components (default: all):
-  skills       Install agent skills (18 skills)
+  skills       Install agent skills (17 skills)
   prompts      Install prompt files (/build, /prd-create)
   workflow     Install mobile trigger workflow (/agent commands)
 
@@ -163,8 +163,9 @@ for component in "${COMPONENTS[@]}"; do
       echo ""
       ;;
     workflow)
-      echo -e "${BOLD}Workflow${NC}"
+      echo -e "${BOLD}Workflows${NC}"
       install_file "$SOURCE_DIR/workflows/mobile-trigger.yml" "$TARGET/workflows/mobile-trigger.yml"
+      install_file "$SOURCE_DIR/workflows/deploy-pages.yml" "$TARGET/workflows/deploy-pages.yml"
       echo ""
       ;;
   esac
