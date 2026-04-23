@@ -1,4 +1,5 @@
 ---
+name: build-landing-page
 description: Build a complete landing page for the current project from scratch. Interviews the user, generates a self-contained index.html using the bundled design system, and adds a GitHub Pages deploy workflow. Use when user wants to build a landing page, create a project website, or deploy a sales page.
 ---
 
@@ -14,7 +15,15 @@ The page is built from scratch for this project using a bundled design system â€
 
 ## Step 1 â€” Load the design system
 
-Read the design system reference before writing any code:
+Read the design system reference before writing any code.
+
+First, check if a custom design system exists at:
+
+```
+.github/skills/extract-design-system/DESIGN-SYSTEM.md
+```
+
+If that file exists, use it. Otherwise, fall back to the default:
 
 ```
 .github/skills/build-landing-page/DESIGN-SYSTEM.md
