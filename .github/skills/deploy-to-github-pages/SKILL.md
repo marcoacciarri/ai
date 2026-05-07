@@ -16,14 +16,14 @@ description: Deploy a static website to GitHub Pages with automatic CI/CD. Use w
    - Save
 
 3. **Deploy**
-   - Push your website files to the `site/` folder
+   - Push your website files to the `pages/` folder
    - Commit and push to `main`
    - Workflow auto-deploys on push
    - View live at `https://<username>.github.io/<repo-name>`
 
 ## Customizing the Workflow
 
-The default workflow watches for changes in `site/**` and deploys them.
+The default workflow watches for changes in `pages/**` and deploys them.
 
 **To deploy from a different folder**, edit `.github/workflows/deploy-pages.yml`:
 
@@ -65,7 +65,7 @@ To deploy without pushing to `main`:
 **Workflow failed**
 
 - Check the **Actions** tab for error logs
-- Ensure `site/` folder has valid HTML files
+- Ensure `pages/` folder has valid HTML files
 - Verify `deploy-pages.yml` has correct path settings
 
 **Site not updating after push**
