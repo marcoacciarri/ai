@@ -145,12 +145,12 @@ The `/build` prompt walks you through:
 
 ## Deploying Your Website
 
-The `site/` folder is where your website lives. Add your HTML, CSS, JS, and images there. A GitHub Actions workflow (`.github/workflows/deploy-pages.yml`) automatically deploys the `site/` folder to GitHub Pages whenever its contents change on `main`.
+The `pages/` folder is where your website lives. Add your HTML, CSS, JS, and images there. A GitHub Actions workflow (`.github/workflows/deploy-pages.yml`) automatically deploys the `pages/` folder to GitHub Pages whenever its contents change on `main`.
 
 ### Setup
 
 1. Clone or fork this repo
-2. Add your website files to the `site/` folder
+2. Add your website files to the `pages/` folder
 3. Go to your repo's **Settings → Pages → Source** and select **GitHub Actions**
 4. Push to `main`
 

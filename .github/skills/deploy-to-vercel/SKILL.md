@@ -14,7 +14,7 @@ description: Deploy a static website to Vercel with automatic previews and custo
 2. **Deploy from Git**
    - In Vercel Dashboard: **Add New → Project**
    - Import your GitHub repo
-   - Set **Root Directory** to `site`
+   - Set **Root Directory** to `pages`
    - Leave other settings default
    - Click **Deploy**
    - Live at `https://<project-name>.vercel.app`
@@ -62,7 +62,7 @@ Create `vercel.json` in repo root for advanced config:
 {
   "buildCommand": "echo 'Static site - no build needed'",
   "installCommand": "echo 'No dependencies to install'",
-  "outputDirectory": "site"
+  "outputDirectory": "pages"
 }
 ```
 
@@ -70,8 +70,8 @@ Create `vercel.json` in repo root for advanced config:
 
 **Blank page after deploy**
 
-- Check that `site/index.html` exists
-- Verify `Root Directory` is set to `site` in project settings
+- Check that `pages/index.html` exists
+- Verify `Root Directory` is set to `pages` in project settings
 - Check build logs in Vercel Dashboard
 
 **Custom domain not resolving**

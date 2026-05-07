@@ -1,6 +1,6 @@
 ---
 name: build-website
-description: "Build a complete multi-page website (home, about, services, contact, etc.) using the extracted design system. Generates a site/ folder with shared CSS, JS, and individually-crafted HTML pages with consistent navigation. Use when user wants to build a website, create multiple pages, or needs more than a single landing page."
+description: "Build a complete multi-page website (home, about, services, contact, etc.) using the extracted design system. Generates a pages/ folder with shared CSS, JS, and individually-crafted HTML pages with consistent navigation. Use when user wants to build a website, create multiple pages, or needs more than a single landing page."
 argument-hint: "Describe the website you want to build"
 ---
 
@@ -8,7 +8,7 @@ argument-hint: "Describe the website you want to build"
 
 ## Overview
 
-Generate a complete, multi-page static website for a project using the extracted design system. Produces a `site/` folder with shared CSS, shared JS, and individually-crafted HTML pages — all with consistent navigation, header, and footer.
+Generate a complete, multi-page static website for a project using the extracted design system. Produces a `pages/` folder with shared CSS, shared JS, and individually-crafted HTML pages — all with consistent navigation, header, and footer.
 
 No frameworks, no build tools. Pure HTML + CSS + vanilla JS, deployable to GitHub Pages.
 
@@ -27,7 +27,7 @@ The design system is always located at:
 This file contains:
 
 - **Design Tokens** — exact color, typography, spacing, shape, and breakpoint values
-- **Full CSS** — a complete stylesheet to use as the foundation for `site/css/style.css`
+- **Full CSS** — a complete stylesheet to use as the foundation for `pages/css/style.css`
 - **Available Components** — HTML snippets for every component (nav, hero, cards, forms, footer, etc.)
 - **Key Design Characteristics** — the defining visual patterns to preserve
 
@@ -90,7 +90,7 @@ Collect the following in one message:
 Based on the interview, plan the output:
 
 ```
-site/
+pages/
 ├── index.html              ← Home page
 ├── about.html              ← About page (if requested)
 ├── services.html           ← Services page (if requested)
@@ -115,7 +115,7 @@ Present the planned site structure to the user and confirm before building.
 
 ---
 
-## Step 4 — Create `site/css/style.css`
+## Step 4 — Create `pages/css/style.css`
 
 This is the shared stylesheet used by every page.
 
@@ -138,7 +138,7 @@ This is the shared stylesheet used by every page.
 
 ---
 
-## Step 5 — Create `site/js/main.js`
+## Step 5 — Create `pages/js/main.js`
 
 Shared JavaScript for all pages. Keep it under 60 lines. Include:
 
@@ -243,7 +243,7 @@ on:
     branches:
       - main
     paths:
-      - "site/**"
+      - "pages/**"
   workflow_dispatch:
 
 permissions:
@@ -269,7 +269,7 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Stage website
-        run: cp -r site _site
+        run: cp -r pages _site
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -281,7 +281,7 @@ jobs:
         uses: actions/deploy-pages@v4
 ```
 
-If the workflow already exists, verify it deploys `site/` (not just `index.html`) and update if needed.
+If the workflow already exists, verify it deploys `pages/` (not just `index.html`) and update if needed.
 
 ---
 
@@ -289,21 +289,21 @@ If the workflow already exists, verify it deploys `site/` (not just `index.html`
 
 After creating all files, send this message:
 
-> **Website created.** Open `site/index.html` in a browser to preview.
+> **Website created.** Open `pages/index.html` in a browser to preview.
 >
 > **Generated files:**
 >
-> - `site/css/style.css` — shared stylesheet
-> - `site/js/main.js` — shared interactivity
-> - `site/index.html` — Home page
-> - `site/{page}.html` — {list each additional page}
+> - `pages/css/style.css` — shared stylesheet
+> - `pages/js/main.js` — shared interactivity
+> - `pages/index.html` — Home page
+> - `pages/{page}.html` — {list each additional page}
 >
 > **Image placeholders** are marked with `[ brackets ]` — replace them with real photos or remove the placeholder elements.
 >
 > **To deploy to GitHub Pages:**
 >
 > 1. _(One-time)_ Go to your repo → **Settings → Pages → Source** → select **GitHub Actions**
-> 2. Push the `site/` folder to `main`
+> 2. Push the `pages/` folder to `main`
 > 3. The workflow will deploy automatically
 > 4. Your site will be live at `https://{username}.github.io/{repo}/`
 >
